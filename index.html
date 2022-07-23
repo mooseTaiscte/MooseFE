@@ -105,5 +105,13 @@
             { key: "1", nome: "Joana Fernandes", alcunha: "Janice", instrumento:"Bombo", estadio:"Projetuno", source: "janice.png", key: "3", parent: "1" },
             { /* Empty node data, to show a node with no values from bindings */ }
     ]);
+
+    let url = 'https://cryptic-shelf-15906.herokuapp.com/getAll';
+
+    fetch(url)
+    .then(res => res.json())
+    .then(out =>
+        console.log('Great success', out))
+
 </script>
 </html>
