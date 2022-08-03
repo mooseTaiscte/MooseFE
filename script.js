@@ -105,7 +105,11 @@ function init(json) {
 let headers = new Headers();
 let url = 'https://cryptic-shelf-15906.herokuapp.com/getAll';
 
-res = fetch(url)
+req = {
+    'Access-Control-Allow-Origin': '*'
+}
+
+res = fetch(url, req)
 .then(res => res.json())
 .then(out => generateTree(out))
 
