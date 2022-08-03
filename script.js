@@ -16,7 +16,7 @@ function init(json) {
     myDiagram.nodeTemplate =
     $(go.Node, "Auto",
         $(go.Shape, "Rectangle",
-            { name: "SHAPE", stroke: 'blue', fill:"white", strokeWidth: 3.5, portId: "", width: 300 }),
+            { name: "SHAPE", stroke: 'white', fill:"white", strokeWidth: 3.5, portId: "", width: 300 }),
         $(go.Panel, "Horizontal",
             $(go.Picture,
                 {
@@ -55,7 +55,7 @@ function init(json) {
                     },
                     new go.Binding("text", "nome").makeTwoWay()),
                 //INSTRUMENTO
-                $(go.TextBlock, "Title: ", "Intrumento:",
+                $(go.TextBlock, "Title: ", "Instrumento:",
                     { row: 2, column: 0 }),
                 $(go.TextBlock, "Placeholder",
                     {
