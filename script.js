@@ -112,7 +112,7 @@ var requestOptions = {
     redirect: 'follow'
   };
 
-res = fetch(url, req)
+res = fetch(url, requestOptions)
 .then(res => res.json())
 .then(out => generateTree(out))
 
