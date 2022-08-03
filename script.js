@@ -102,12 +102,15 @@ function init(json) {
     
 }
 
-let headers = new Headers();
+let myHeaders = new Headers();
 let url = 'https://cryptic-shelf-15906.herokuapp.com/getAll';
+myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
 
-req = {
-    'Access-Control-Allow-Origin': '*'
-}
+var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
 
 res = fetch(url, req)
 .then(res => res.json())
