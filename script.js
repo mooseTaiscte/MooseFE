@@ -10,7 +10,7 @@ function init(json) {
             layout: new go.TreeLayout({ angle: 90, layerSpacing: 35 })
         });
 
-    myDiagram.model = new go.TreeModel( [json] )
+    myDiagram.model = new go.TreeModel( json )
 
     // define a simple Node template
     myDiagram.nodeTemplate =
