@@ -102,6 +102,19 @@ function init(json) {
     
 }
 
+let headers = new Headers();
+let url = 'https://cryptic-shelf-15906.herokuapp.com/getAll';
+
+res = fetch(url)
+.then(res => res.json())
+.then(out => generateTree(out))
+
+
+function generateTree(json){
+    console.log(json) 
+    init(json)
+}
+
 function addEmployee(node, ) {
     if (!node) return;
     const thisemp = node.data;
