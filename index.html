@@ -6,112 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://unpkg.com/gojs/release/go.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <script src="script.js" defer></script>
+    <script src="request.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
 </head>
 <body>
     <div id="myDiagramDiv"></div>
 </body>
 <script>
-    const $ = go.GraphObject.make;
-    const myDiagram =
-    new go.Diagram("myDiagramDiv",
-        { // enable Ctrl-Z to undo and Ctrl-Y to redo
-            "undoManager.isEnabled": true,
-            layout: new go.TreeLayout({ angle: 90, layerSpacing: 35 })
-        });
-
-    // define a simple Node template
-    myDiagram.nodeTemplate =
-    
-    $(go.Node, "Auto",
-        $(go.Shape, "Rectangle",
-            { name: "SHAPE", stroke: 'white', fill:"#FFF", strokeWidth: 3.5, portId: "" }),
-        $(go.Panel, "Horizontal",
-            $(go.Picture,
-                {
-                    name: "Picture",
-                    desiredSize: new go.Size(70, 70),
-                    margin: 1.5,
-                    source: "th.jpg"  // the default image
-                },
-                new go.Binding("source", "source")),
-            $(go.Panel, "Table",
-                {
-                    minSize: new go.Size(200, NaN),
-                    margin: new go.Margin(6, 10, 0, 6),
-                    defaultAlignment: go.Spot.Left
-                },
-                $(go.RowColumnDefinition, { column: 2, width: 2 }),
-                //ALCUNHA
-                $(go.TextBlock, "Placeholder",  // the name
-                    {
-                        row: 0, column: 0, columnSpan: 5,
-                        textAlign: "center",
-                        font: "14pt Segoe UI,sans-serif",
-                        isMultiline: false,
-                        minSize: new go.Size(10, 25)
-                    },
-                    new go.Binding("text", "alcunha").makeTwoWay()),
-                //NOME
-                $(go.TextBlock, "Title: ", "Nome:",
-                    { row: 1, column: 0 }),
-                $(go.TextBlock, "Placeholder",
-                    {
-                        row: 1, column: 1, columnSpan: 4,
-                        isMultiline: false,
-                        minSize: new go.Size(10, 14),
-                        margin: new go.Margin(2, 0, 0, 3)
-                    },
-                    new go.Binding("text", "nome").makeTwoWay()),
-                //INSTRUMENTO
-                $(go.TextBlock, "Title: ", "Intrumento:",
-                    { row: 2, column: 0 }),
-                $(go.TextBlock, "Placeholder",
-                    {
-                        row: 2, column: 1, columnSpan: 4,
-                        isMultiline: false,
-                        minSize: new go.Size(10, 14),
-                        margin: new go.Margin(2, 0, 0, 3)
-                    },
-                    new go.Binding("text", "instrumento").makeTwoWay()),
-                //ESTADIO
-                $(go.TextBlock, "Title: ", "Estadio:",
-                    { row: 3, column: 0 }),
-                $(go.TextBlock, "Placeholder",
-                    {
-                        row: 3, column: 1, columnSpan: 4,
-                        isMultiline: false,
-                        minSize: new go.Size(10, 14),
-                        margin: new go.Margin(2, 0, 0, 3)
-                    },
-                    new go.Binding("text", "estadio").makeTwoWay()),
-            )
-        )
-    );
-
-    myDiagram.linkTemplate = new go.Link(
-        // default routing is go.Link.Normal
-        // default corner is 0
-        { routing: go.Link.Orthogonal, corner: 5 })
-        // the link path, a Shape
-        .add(new go.Shape({ strokeWidth: 3, stroke: "#555" }))
-
-    myDiagram.model = new go.TreeModel(
+    /*myDiagram.model = new go.TreeModel(
         [ // note that each node data object holds whatever properties it needs;
             // for this app we add the "name" and "source" properties
             // because in our template above, we have defined a bindings to expect them
             { key: "1", nome: "Rui Fernandes", alcunha: "Fanã", instrumento:"Pandeireta", estadio:"Veterano", source: "fana.png"},
             { key: "1", nome: "Maria Alcaparra", alcunha: "Fiona", instrumento:"Pandeireta", estadio:"Caloira", source: "fiona.png", key: "2", parent: "1"},
             { key: "1", nome: "Joana Fernandes", alcunha: "Janice", instrumento:"Bombo", estadio:"Projetuno", source: "janice.png", key: "3", parent: "1" },
-            { /* Empty node data, to show a node with no values from bindings */ }
-    ]);
-
-    let url = 'https://cryptic-shelf-15906.herokuapp.com/getAll';
-
-    fetch(url)
-    .then(res => res.json())
-    .then(out =>
-        console.log('Great success', out))
-
+            //{  Empty node data, to show a node with no values from bindings  }
+    ]);*/   
 </script>
 </html>
