@@ -7,7 +7,7 @@ function init(json) {
     new go.Diagram("myDiagramDiv",
         { // enable Ctrl-Z to undo and Ctrl-Y to redo
             "undoManager.isEnabled": true,
-            layout: new go.TreeLayout({ angle: 90, layerSpacing: 35 })
+            layout: new go.TreeLayout({ angle: 90, layerSpacing: 35, arrangement: go.TreeLayout.ArrangementHorizontal })
         });
 
     myDiagram.model = new go.TreeModel( json )
