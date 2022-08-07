@@ -8,3 +8,15 @@ html, body{
     height:100%;
     background-color: #DAE4E4;
 }
+
+#save{
+    position: absolute;
+    top: 5%;
+    right: 1%;
+    width: 10%;
+    height: 5%;
+    background-color: #006699;
+    border: 0px;
+    color: white;
+    z-index: 10;
+}
