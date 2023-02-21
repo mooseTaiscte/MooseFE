@@ -126,7 +126,7 @@ function init(json) {
 }
 
 let myHeaders = new Headers();
-let url = 'http://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/getAll';
+let url = 'https://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/getAll';
 myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
 var requestOptions = {
     method: 'GET',
@@ -166,7 +166,7 @@ function deleteAll(){
     redirect: 'follow'
     };
 
-    fetch("http://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/delete", requestOptions)
+    fetch("https://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/delete", requestOptions)
     .then(response => response.text())
     .then(result => console.log(result))
     .catch(error => console.log('error', error));
@@ -188,7 +188,7 @@ function save() {
     console.log(JSON.parse(myDiagram.model.toJson())["nodeDataArray"])
     deleteAll()
 
-    fetch("http://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/create", requestOptions)
+    fetch("https://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/create", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
