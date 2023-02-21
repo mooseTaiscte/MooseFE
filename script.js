@@ -50,7 +50,7 @@ function init(json) {
                             isMultiline: false,
                             minSize: new go.Size(10, 25)
                         },
-                        new go.Binding("text", "alcunha").makeTwoWay()),
+                        new go.Binding("text", "key").makeTwoWay()),
                     //NOME
                     $(go.TextBlock, "Title: ", "Nome:",
                         { row: 1, column: 0 }),
@@ -126,9 +126,8 @@ function init(json) {
 }
 
 let myHeaders = new Headers();
-let url = 'https://cryptic-shelf-15906.herokuapp.com/getAll';
+let url = 'http://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/getAll';
 myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
-
 var requestOptions = {
     method: 'GET',
     headers: myHeaders,
@@ -167,7 +166,7 @@ function deleteAll(){
     redirect: 'follow'
     };
 
-    fetch("https://cryptic-shelf-15906.herokuapp.com/delete", requestOptions)
+    fetch("http://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/delete", requestOptions)
     .then(response => response.text())
     .then(result => console.log(result))
     .catch(error => console.log('error', error));
@@ -189,7 +188,7 @@ function save() {
     console.log(JSON.parse(myDiagram.model.toJson())["nodeDataArray"])
     deleteAll()
 
-    fetch("https://cryptic-shelf-15906.herokuapp.com/create", requestOptions)
+    fetch("http://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/create", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
