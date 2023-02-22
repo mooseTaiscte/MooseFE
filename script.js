@@ -126,7 +126,7 @@ function init(json) {
 }
 
 let myHeaders = new Headers();
-let url = 'http://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/getAll';
+let url = 'https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/getAll';
 myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
 var requestOptions = {
     method: 'GET',
