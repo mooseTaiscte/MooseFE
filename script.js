@@ -19,6 +19,7 @@ function init(json) {
             selectionObjectName: "BODY",
             mouseEnter: (e, node) => node.findObject("BUTTON").opacity = 1,
             mouseLeave: (e, node) => node.findObject("BUTTON").opacity = 0,
+            click: showNodeDetails // add a click event handler to the node
         },
         $(go.Panel, "Auto",
             { name: "BODY" },
@@ -30,9 +31,13 @@ function init(json) {
                         name: "Picture",
                         desiredSize: new go.Size(70, 70),
                         margin: 1.5,
-                        source: "th.jpg"  // the default image
+                        source: "source.jpg"  // the default image
                     },
-                    new go.Binding("source", "source")),
+                    new go.Binding("source", "key", function(key) {
+                        console.log("hey init");
+                        // construct the picture source based on the node's key value
+                        return key + ".jpg";
+                      })),
                 $(go.Panel, "Table",
                     {
                         minSize: new go.Size(200, NaN),
@@ -134,9 +139,30 @@ var requestOptions = {
     redirect: 'follow'
   };
 
-res = fetch(url, requestOptions)
-.then(res => res.json())
-.then(out => generateTree(out))
+  let isFirstLoad = true;
+
+
+  function loadTree() {
+    if (isFirstLoad) {
+      console.log("hehehe");
+      isFirstLoad = false;
+      const cachedData = localStorage.getItem('treeData');
+      if (cachedData) {
+        generateTree(JSON.parse(cachedData));
+      } else {
+        fetch(url, requestOptions)
+          .then(res => res.json())
+          .then(data => {
+            localStorage.setItem('treeData', JSON.stringify(data));
+            generateTree(data);
+          });
+      }
+    }
+  }
+  
+  
+  window.addEventListener("load", loadTree);
+  
 
 
 function generateTree(json){
@@ -194,4 +220,61 @@ function save() {
       .catch(error => console.log('error', error));
 
     myDiagram.isModified = false;
+}
+// function to show the details for the clicked node
+function showNodeDetails(e,node) {
+    // create the side bar
+    const sideBar = document.createElement('div');
+    sideBar.setAttribute('id', 'sidebar');
+    sideBar.style.cssText = 'position: absolute; top: 0; right: 0; bottom: 0; width: 300px; background: #f7f7f7; border-left: 1px solid #ddd; margin-left: 20px;';
+
+    document.getElementById('myDiagramDiv').appendChild(sideBar);
+    // create the content for the side bar
+    const content = document.createElement('div');
+    Object.assign(content.style, { padding: '20px' });
+    sideBar.appendChild(content);
+    
+  
+    // add the node details to the content
+    const h2 = document.createElement('h2');
+    h2.textContent = node.data.nome; // replace 'nome' with the name of the property you want to display
+    content.appendChild(h2);
+    
+    const p1 = document.createElement('p');
+    p1.textContent = "Instrumento: " +node.data.instrumento; // replace 'instrumento' with the name of the property you want to display
+    content.appendChild(p1);
+    
+    const p2 = document.createElement('p');
+    p2.textContent = "Naipe: "+node.data.naipe; // replace 'naipe' with the name of the property you want to display
+    content.appendChild(p2);
+    
+    const p3 = document.createElement('p');
+    p3.textContent = "Estágio: "+node.data.estagio; // replace 'estagio' with the name of the property you want to display
+    content.appendChild(p3);
+
+    const image = new Image();
+    image.src = node.data.key+'.jpg';
+    image.style.display = 'none';
+    image.onload = function() {
+        image.style.display = 'block';
+        image.style.margin = '0 auto';
+    };
+    image.style.display = 'block';
+    image.style.margin = '0 auto';
+    image.style.width = '200px';
+    content.prepend(image);
+    
+     // add a close button to the side bar
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'Close';
+  closeButton.style.position = 'absolute';
+  closeButton.style.bottom = '20px';
+  closeButton.style.right = '20px';
+  closeButton.style.zIndex='1000';
+  sideBar.appendChild(closeButton);
+
+  // add a click event handler to the close button
+  closeButton.addEventListener('click', () => {
+    sideBar.remove(); // remove the side bar from the DOM
+  });
 }

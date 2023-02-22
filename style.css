@@ -20,3 +20,39 @@ html, body{
     color: white;
     z-index: 10;
 }
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    right: -350px; /* start off-screen */
+    width: 350px;
+    height: 100%;
+    background-color: white;
+    border-left: 1px solid gray;
+    transition: right 0.3s ease-out; /* animate opening and closing */
+    z-index: 11;
+  }
+  
+  #sidebar.open {
+    right: 0; /* slide into view */
+  }
+  
+  #sidebar-content {
+    padding: 10px;
+  }
+  
+  #close-button {
+    margin-top: 10px;
+    margin-right: 10px;
+    z-index: 100;
+  }
+  
+  .node-selected {
+    background-color: lightgray;
+  }
+  content {
+    padding: 20px;
+    z-index: 10;
+  }
+  
+  
