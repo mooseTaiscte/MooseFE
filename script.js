@@ -23,7 +23,7 @@ function init(json) {
             },
             $(go.Panel, "Auto",
                 { name: "BODY" },
-                $(go.Shape, "Rectangle",
+                $(go.Shape, "Border",
                     { name: "SHAPE", stroke: 'white', fill: "white", strokeWidth: 3.5, portId: "", width: 300 }),
                 $(go.Panel, "Horizontal",
                     $(go.Picture,
@@ -33,11 +33,12 @@ function init(json) {
                             margin: 1.5,
                             source: "source.jpg"  // the default image
                         },
-                        new go.Binding("source", "key", function (key) {
-                            console.log("hey init");
-                            // construct the picture source based on the node's key value
-                            return key + ".jpg";
-                        })),
+                        new go.Binding("source", "key", function(key) {
+                            return "https://moosepictures.s3.eu-central-1.amazonaws.com/" + key + ".jpg";
+                            
+                          })
+
+                    ),
                     $(go.Panel, "Table",
                         {
                             minSize: new go.Size(200, NaN),
@@ -243,7 +244,9 @@ function showNodeDetails(e, node) {
 
     // iterate over the properties of the node and create elements to display them
     Object.keys(node.data).forEach(key => {
-        if (key !== 'key' && key !== '__gohashid' && key !== 'id' && node.data[key].length !== 0 && node.data[key] !== null) {
+        console.log("debug");
+        console.log(node.data);
+        if (key !== 'key' && key !== '__gohashid' && key !== 'id' && node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
             if (key == 'parent') {
                 p.textContent = `Padrinho: ${node.data[key]}`;
