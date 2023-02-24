@@ -33,10 +33,10 @@ function init(json) {
                             margin: 1.5,
                             source: "source.jpg"  // the default image
                         },
-                        new go.Binding("source", "alcunha", function(alcunha) {
+                        new go.Binding("source", "alcunha", function (alcunha) {
                             return "https://moosepictures.s3.eu-central-1.amazonaws.com/" + alcunha + ".jpg";
-                            
-                          })
+
+                        })
 
                     ),
                     $(go.Panel, "Table",
@@ -225,15 +225,15 @@ function save() {
 // function to show the details for the clicked node
 function showNodeDetails(e, node) {
     // create the side bar
-    const sideBar =document.getElementById('sidebar');
+    const sideBar = document.getElementById('sidebar');
     sideBar.setAttribute('id', 'sidebar');
     sideBar.style.cssText = 'position: absolute; top: 0; right: 0; bottom: 0; width: 300px; background: #f7f7f7; border-left: 1px solid #ddd; margin-left: 20px;';
 
     document.getElementById('myDiagramDiv').appendChild(sideBar);
 
     // create the content for the side bar
-    const content =document.getElementById('sidebar-content');
-    content.innerHTML="";
+    const content = document.getElementById('sidebar-content');
+    content.innerHTML = "";
     Object.assign(content.style, { padding: '20px' });
     sideBar.appendChild(content);
 
@@ -246,7 +246,7 @@ function showNodeDetails(e, node) {
     Object.keys(node.data).forEach(key => {
         console.log("debug");
         console.log(node.data);
-        if (key !== 'key' && key !== '__gohashid' && key !== 'id'&& key !== 'alcunha'&& key !== 'parent' && node.data[key] && node.data[key].length !== 0) {
+        if (key !== 'key' && key !== '__gohashid' && key !== 'id' && key !== 'alcunha' && key !== 'parent' && node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
             if (key == 'padrinhoName') {
                 p.textContent = `Padrinho: ${node.data[key]}`;
@@ -257,7 +257,20 @@ function showNodeDetails(e, node) {
             content.appendChild(p);
         }
     });
+    // add a close button to the side bar
+    const closeButton = document.getElementById("close-button");
+    closeButton.setAttribute("id", "close-button");
+    closeButton.textContent = "Close";
+    closeButton.style.position = "absolute";
+    closeButton.style.bottom = "20px";
+    closeButton.style.right = "20px";
+    closeButton.style.zIndex = "1000";
+    sideBar.appendChild(closeButton);
 
+    // add a click event handler to the close button
+    closeButton.addEventListener("click", () => {
+        slideOut(sideBar, 300);
+    });
     const image = new Image();
     image.src = node.data.key + '.jpg';
     image.style.display = 'none';
@@ -270,19 +283,23 @@ function showNodeDetails(e, node) {
     image.style.width = '200px';
     content.prepend(image);
 
-    // add a close button to the side bar
-    const closeButton = document.getElementById('close-button');
-
-    closeButton.textContent = 'Close';
-    closeButton.style.position = 'absolute';
-    closeButton.style.bottom = '20px';
-    closeButton.style.right = '20px';
-    closeButton.style.zIndex = '1000';
-    sideBar.appendChild(closeButton);
-    sideBar.style.visibility="visible";
-
-    // add a click event handler to the close button
-    closeButton.addEventListener('click', () => {
-        sideBar.style.visibility="hidden"; 
-    });
+    slideIn(sideBar, 300);
 }
+
+function slideIn(element, duration) {
+    element.style.visibility = "visible";
+    element.style.transition = "width " + duration + "ms ease-in-out";
+    element.style.width = "0px";
+    setTimeout(() => {
+        element.style.width = "300px";
+    }, 10);
+}
+
+function slideOut(element, duration) {
+    element.style.transition = "width " + duration + "ms ease-in-out";
+    element.style.width = "0px";
+    setTimeout(() => {
+        element.style.visibility = "hidden";
+    }, duration);
+}
+
