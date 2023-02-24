@@ -33,8 +33,8 @@ function init(json) {
                             margin: 1.5,
                             source: "source.jpg"  // the default image
                         },
-                        new go.Binding("source", "key", function(key) {
-                            return "https://moosepictures.s3.eu-central-1.amazonaws.com/" + key + ".jpg";
+                        new go.Binding("source", "alcunha", function(alcunha) {
+                            return "https://moosepictures.s3.eu-central-1.amazonaws.com/" + alcunha + ".jpg";
                             
                           })
 
@@ -56,7 +56,7 @@ function init(json) {
                                 isMultiline: false,
                                 minSize: new go.Size(10, 25)
                             },
-                            new go.Binding("text", "key").makeTwoWay()),
+                            new go.Binding("text", "alcunha").makeTwoWay()),
                         //NOME
                         $(go.TextBlock, "Title: ", "Nome:",
                             { row: 1, column: 0 }),
