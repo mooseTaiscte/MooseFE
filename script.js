@@ -239,16 +239,16 @@ function showNodeDetails(e, node) {
 
     // add the node details to the content
     const h2 = document.createElement('h2');
-    h2.textContent = node.data.key;
+    h2.textContent = node.data.alcunha;
     content.appendChild(h2);
 
     // iterate over the properties of the node and create elements to display them
     Object.keys(node.data).forEach(key => {
         console.log("debug");
         console.log(node.data);
-        if (key !== 'key' && key !== '__gohashid' && key !== 'id' && node.data[key] && node.data[key].length !== 0) {
+        if (key !== 'key' && key !== '__gohashid' && key !== 'id'&& key !== 'alcunha'&& key !== 'parent' && node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
-            if (key == 'parent') {
+            if (key == 'padrinhoName') {
                 p.textContent = `Padrinho: ${node.data[key]}`;
             } else {
                 console.log(node.data[key]);
