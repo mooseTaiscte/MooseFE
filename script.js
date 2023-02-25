@@ -33,8 +33,8 @@ function init(json) {
                             margin: 1.5,
                             source: "source.jpg"  // the default image
                         },
-                        new go.Binding("source", "alcunha", function (alcunha) {
-                            return "https://moosepictures.s3.eu-central-1.amazonaws.com/" + alcunha + ".jpg";
+                        new go.Binding("source", "key", function (key) {
+                            return "https://moosepictures.s3.eu-central-1.amazonaws.com/" + key + ".jpg";
 
                         })
 
