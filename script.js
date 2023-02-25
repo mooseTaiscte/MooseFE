@@ -272,7 +272,7 @@ function showNodeDetails(e, node) {
         slideOut(sideBar, 300);
     });
     const image = new Image();
-    image.src = node.data.key + '.jpg';
+    image.src = "https://moosepictures.s3.eu-central-1.amazonaws.com/" + node.data.key + ".jpg";
     image.style.display = 'none';
     image.onload = function () {
         image.style.display = 'block';
