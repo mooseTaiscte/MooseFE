@@ -31,11 +31,12 @@ function init(json) {
                             name: "Picture",
                             desiredSize: new go.Size(70, 70),
                             margin: 1.5,
-                            source: "source.jpg"  // the default image
+                            source: "source.jpg",  // the default image
+                            imageStretch: go.GraphObject.UniformToFill
+                            //go.GraphObject.Uniform also usable
                         },
                         new go.Binding("source", "key", function (key) {
                             return "https://moosepictures.s3.eu-central-1.amazonaws.com/" + key + ".jpg";
-
                         })
 
                     ),
@@ -175,7 +176,20 @@ function addEmployee(node,) {
     if (!node) return;
     const thisemp = node.data;
     myDiagram.startTransaction("add employee");
-    const newemp = { name: "(new person)", title: "(title)", comments: "", parent: thisemp.key };
+    const newemp = {
+        parent: thisemp.key,
+        nome: "Placeholder", 
+        alcunha: "Placeholder",
+        instrumento: "Placeholder",
+        estagio: "Placeholder",
+        naipe: "Placeholder",
+        curso: "Placeholder",
+        localCaloiro: "Placeholder",
+        localSaida: "Placeholder",
+        dataCaloiro: "1970-01-01",
+        dataNascimento: "1970-01-01",
+        dataIngressao: "1970-01-01",
+    };
     myDiagram.model.addNodeData(newemp);
     const newnode = myDiagram.findNodeForData(newemp);
     if (newnode) newnode.location = node.location;
@@ -193,7 +207,7 @@ function deleteAll() {
         redirect: 'follow'
     };
 
-    fetch("https://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/delete", requestOptions)
+    fetch("https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/delete", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
@@ -215,7 +229,7 @@ function save() {
     console.log(JSON.parse(myDiagram.model.toJson())["nodeDataArray"])
     deleteAll()
 
-    fetch("https://moosebackend-env.eba-3mkf2ukm.eu-central-1.elasticbeanstalk.com/create", requestOptions)
+    fetch("https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/create", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
@@ -272,7 +286,7 @@ function showNodeDetails(e, node) {
         slideOut(sideBar, 300);
     });
     const image = new Image();
-    image.src = node.data.key + '.jpg';
+    image.src = "https://moosepictures.s3.eu-central-1.amazonaws.com/" + node.data.key + ".jpg";
     image.style.display = 'none';
     image.onload = function () {
         image.style.display = 'block';
