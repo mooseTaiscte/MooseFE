@@ -9,6 +9,16 @@
     <script src="https://unpkg.com/gojs/release/go.js"></script>
     <script src="script.js" defer></script>
     <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <div id="top-bar">
+        <div id="arrow-btn" onclick="closeTopBar()"></div>
+        <input type="text" id="instrumento-input" placeholder="Instrumento" autocomplete="off">
+        <input type="text" id="familia-input" placeholder="Familia" autocomplete="off">
+        <input type="text" id="naipe-input" placeholder="Naipe" autocomplete="off">
+        <input type="text" id="curso-input" placeholder="Curso" autocomplete="off">
+        <input type="text" id="estagio-input" placeholder="Estágio" autocomplete="off">
+        <button id="filtrar" onclick="filter()">Filtrar</button>
+      </div>
 </head>
 <body>
     <div id="myDiagramDiv"></div>

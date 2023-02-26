@@ -132,9 +132,91 @@ function init(json) {
         { routing: go.Link.Orthogonal, corner: 5 })
         // the link path, a Shape
         .add(new go.Shape({ strokeWidth: 3, stroke: "#555" }))
-
+    setNodeBorderByFamilia()
 
 }
+let isHighlighted = false;
+function setNodeBorderByFamilia() {
+    myDiagram.nodes.each(function (node) {
+        const familia = node.data.familia;
+        let color = "black";
+        switch (familia) {
+            case "Almeida":
+                color = "pink";
+                break;
+            case "Bastos":
+                color = "darkblue";
+                break;
+            case "Gomes":
+                color = "mediumpurple";
+                break;
+            case "Ramos":
+                color = "green";
+                break;
+            case "Lopes":
+                color = "lime";
+                break;
+        }
+        node.findObject("SHAPE").stroke = color;
+    })
+}
+
+function highlightGuitars() {
+    if (isHighlighted) {
+        setNodeBorderByFamilia();
+        isHighlighted = false;
+        return;
+    }
+    myDiagram.nodes.each(function (node) {
+        if (node.data.instrumento == "Guitarra") {
+            node.findObject("SHAPE").stroke = "yellow";
+        }
+    })
+    isHighlighted = true;
+}
+
+function filter() {
+    setNodeBorderByFamilia()
+    const instrumento = document.getElementById('instrumento-input').value;
+    const familia = document.getElementById('familia-input').value;
+    const naipe = document.getElementById('naipe-input').value;
+    const curso = document.getElementById('curso-input').value;
+    const estagio = document.getElementById('estagio-input').value;
+
+
+    let nodeData = {};
+    if (instrumento !== "") {
+        nodeData.instrumento = instrumento;
+    }
+    if (familia !== "") {
+        nodeData.familia = familia;
+    }
+    if (naipe !== "") {
+        nodeData.naipe = naipe;
+    }
+    if (curso !== "") {
+        nodeData.curso = curso;
+    }
+    if (estagio !== "") {
+        nodeData.estagio = estagio;
+    }
+    
+    const findNodes = myDiagram.findNodesByExample(nodeData);
+findNodes.each(node =>  node.findObject("SHAPE").stroke = "yellow");
+
+}
+
+const arrowBtn = document.querySelector('#arrow-btn');
+const topBar = document.querySelector('#top-bar');
+
+function closeTopBar(){
+    slideOut(topBar,1000);
+}
+
+function openTopBar(){
+    slideIn(topBar300);
+}
+
 
 let myHeaders = new Headers();
 let url = 'https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/getAll';
@@ -150,7 +232,6 @@ let isFirstLoad = true;
 
 function loadTree() {
     if (isFirstLoad) {
-        console.log("hehehe");
         isFirstLoad = false;
         const cachedData = localStorage.getItem('treeData');
         if (cachedData) {
@@ -166,10 +247,7 @@ function loadTree() {
     }
 }
 
-
 window.addEventListener("load", loadTree);
-
-
 
 function generateTree(json) {
     console.log(json)
@@ -182,7 +260,7 @@ function addEmployee(node,) {
     myDiagram.startTransaction("add employee");
     const newemp = {
         parent: thisemp.key,
-        nome: "Placeholder", 
+        nome: "Placeholder",
         alcunha: "Placeholder",
         instrumento: "Placeholder",
         estagio: "Placeholder",
@@ -251,21 +329,21 @@ function showNodeDetails(e, node) {
     showTunanteImage(node.data.key)
 }
 
-function showSideBarPanel(){
+function showSideBarPanel() {
     sideBar.style.cssText = 'position: absolute; top: 0; right: 0; bottom: 0; width: 300px;';
     document.getElementById('myDiagramDiv').appendChild(sideBar);
     slideIn(sideBar, 300);
 }
 
-function closeSideBar(){
+function closeSideBar() {
     slideOut(sideBar, 300)
 }
 
-function clearSibeBarContent(){
+function clearSibeBarContent() {
     content.innerHTML = "";
 }
 
-function showTunanteImage(key){
+function showTunanteImage(key) {
     const image = new Image();
     image.src = "https://moosepictures.s3.eu-central-1.amazonaws.com/" + key + ".jpg";
     image.style.display = 'none';
@@ -279,24 +357,24 @@ function showTunanteImage(key){
     content.prepend(image);
 }
 
-function addAlcunhaToSideBar(alcunha){
+function addAlcunhaToSideBar(alcunha) {
     const h2 = document.createElement('h2');
     h2.textContent = alcunha;
     content.appendChild(h2);
 }
 
-function showAllNodeDetailOnSideBar(node){
-    Object.keys(node.data).forEach(key => {    
+function showAllNodeDetailOnSideBar(node) {
+    Object.keys(node.data).forEach(key => {
         if (key !== 'key' && key !== '__gohashid' && key !== 'id' && key !== 'alcunha' && key !== 'parent' && node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
             const keyText = key.charAt(0).toUpperCase() + key.slice(1);
             const valueText = node.data[key];
             if (key == 'padrinhoName' && node.data.gender == "F") {
                 p.textContent = `Padrinho: ${node.data[key]}`;
-            } 
-            else if (key == 'padrinhoName' && node.data.gender == "M") { 
+            }
+            else if (key == 'padrinhoName' && node.data.gender == "M") {
                 p.textContent = `Madrinha: ${node.data[key]}`;
-            } 
+            }
             else {
                 p.textContent = `${keyText}: `;
                 const input = document.createElement('input');
@@ -313,7 +391,7 @@ function showAllNodeDetailOnSideBar(node){
     });
 }
 
-function addFieldsToSideBarDropdown(){
+function addFieldsToSideBarDropdown() {
     dropdown.innerHTML = `
         <option value="">Novo Campo</option>
         <option value="localTuno">Local Tuno</option>
