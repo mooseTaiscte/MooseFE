@@ -22,7 +22,7 @@ html, body{
 }
 #refresh{
   position: fixed;
-  top: 11%;
+  bottom: 1%;
   left: 1%;
   width: 5%;
   height: 5%;
