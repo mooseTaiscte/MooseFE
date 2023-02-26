@@ -1,5 +1,9 @@
 var $ = null
 var myDiagram = null
+const sideBar = document.getElementById('sidebar');
+const addButton = document.getElementById('add-button');
+const content = document.getElementById('sidebar-content');
+const dropdown = document.getElementById('select-field');
 
 function init(json) {
     $ = go.GraphObject.make;
@@ -236,57 +240,34 @@ function save() {
 
     myDiagram.isModified = false;
 }
-// function to show the details for the clicked node
+
+
 function showNodeDetails(e, node) {
-    // create the side bar
-    const sideBar = document.getElementById('sidebar');
-    sideBar.setAttribute('id', 'sidebar');
-    sideBar.style.cssText = 'position: absolute; top: 0; right: 0; bottom: 0; width: 300px; background: #f7f7f7; border-left: 1px solid #ddd; margin-left: 20px;';
+    clearSibeBarContent()
+    showSideBarPanel()
+    addAlcunhaToSideBar(node.data.alcunha)
+    addFieldsToSideBarDropdown()
+    showAllNodeDetailOnSideBar(node)
+    showTunanteImage(node.data.key)
+}
 
+function showSideBarPanel(){
+    sideBar.style.cssText = 'position: absolute; top: 0; right: 0; bottom: 0; width: 300px;';
     document.getElementById('myDiagramDiv').appendChild(sideBar);
+    slideIn(sideBar, 300);
+}
 
-    // create the content for the side bar
-    const content = document.getElementById('sidebar-content');
+function closeSideBar(){
+    slideOut(sideBar, 300)
+}
+
+function clearSibeBarContent(){
     content.innerHTML = "";
-    Object.assign(content.style, { padding: '20px' });
-    sideBar.appendChild(content);
+}
 
-    // add the node details to the content
-    const h2 = document.createElement('h2');
-    h2.textContent = node.data.alcunha;
-    content.appendChild(h2);
-
-    // iterate over the properties of the node and create elements to display them
-    Object.keys(node.data).forEach(key => {
-        console.log("debug");
-        console.log(node.data);
-        if (key !== 'key' && key !== '__gohashid' && key !== 'id' && key !== 'alcunha' && key !== 'parent' && node.data[key] && node.data[key].length !== 0) {
-            const p = document.createElement('p');
-            if (key == 'padrinhoName') {
-                p.textContent = `Padrinho: ${node.data[key]}`;
-            } else {
-                console.log(node.data[key]);
-                p.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${node.data[key]}`;
-            }
-            content.appendChild(p);
-        }
-    });
-    // add a close button to the side bar
-    const closeButton = document.getElementById("close-button");
-    closeButton.setAttribute("id", "close-button");
-    closeButton.textContent = "Close";
-    closeButton.style.position = "absolute";
-    closeButton.style.bottom = "20px";
-    closeButton.style.right = "20px";
-    closeButton.style.zIndex = "1000";
-    sideBar.appendChild(closeButton);
-
-    // add a click event handler to the close button
-    closeButton.addEventListener("click", () => {
-        slideOut(sideBar, 300);
-    });
+function showTunanteImage(key){
     const image = new Image();
-    image.src = "https://moosepictures.s3.eu-central-1.amazonaws.com/" + node.data.key + ".jpg";
+    image.src = "https://moosepictures.s3.eu-central-1.amazonaws.com/" + key + ".jpg";
     image.style.display = 'none';
     image.onload = function () {
         image.style.display = 'block';
@@ -296,9 +277,69 @@ function showNodeDetails(e, node) {
     image.style.margin = '0 auto';
     image.style.width = '200px';
     content.prepend(image);
-
-    slideIn(sideBar, 300);
 }
+
+function addAlcunhaToSideBar(alcunha){
+    const h2 = document.createElement('h2');
+    h2.textContent = alcunha;
+    content.appendChild(h2);
+}
+
+function showAllNodeDetailOnSideBar(node){
+    Object.keys(node.data).forEach(key => {    
+        if (key !== 'key' && key !== '__gohashid' && key !== 'id' && key !== 'alcunha' && key !== 'parent' && node.data[key] && node.data[key].length !== 0) {
+            const p = document.createElement('p');
+            const keyText = key.charAt(0).toUpperCase() + key.slice(1);
+            const valueText = node.data[key];
+            if (key == 'padrinhoName' && node.data.gender == "F") {
+                p.textContent = `Padrinho: ${node.data[key]}`;
+            } 
+            else if (key == 'padrinhoName' && node.data.gender == "M") { 
+                p.textContent = `Madrinha: ${node.data[key]}`;
+            } 
+            else {
+                p.textContent = `${keyText}: `;
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = 'Value';
+                input.value = valueText;
+                input.addEventListener('input', () => {
+                    node.data[key] = input.value;
+                });
+                p.appendChild(input);
+            }
+            content.appendChild(p);
+        }
+    });
+}
+
+function addFieldsToSideBarDropdown(){
+    dropdown.innerHTML = `
+        <option value="">Novo Campo</option>
+        <option value="localTuno">Local Tuno</option>
+        <option value="localSaida">Local Cota</option>
+        <option value="dataTuno">Data Tuno</option>
+        <option value="dataCota">Data Cota</option>
+    `;
+}
+
+function addSelectedFieldToSideBar() {
+    const selectedKey = dropdown.value;
+    if (selectedKey) {
+        const p = document.createElement('p');
+        const keyText = selectedKey.charAt(0).toUpperCase() + selectedKey.slice(1);
+        p.textContent = `${keyText}: `;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Value';
+        input.value = '';
+        input.addEventListener('input', () => {
+            node.data[selectedKey] = input.value;
+        });
+        p.appendChild(input);
+        content.appendChild(p);
+    }
+};
 
 function slideIn(element, duration) {
     element.style.visibility = "visible";

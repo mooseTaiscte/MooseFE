@@ -12,10 +12,14 @@
 </head>
 <body>
     <div id="myDiagramDiv"></div>
-    <button id="save" onclick="save()">Save</button>
     <div id="sidebar">
-        <div id="sidebar-content"></div>
-        <button id="close-button">Close</button>
+        <button id="close-button" onclick="closeSideBar()"><img src="close.svg" alt="Add icon" width="24" height="24"></button>
+        <div id="sidebar-content">
+            <h2 id="alcunha"></h2>
+        </div>
+        <select id="select-field"></select>
+        <button id="add-button" onclick="addSelectedFieldToSideBar()"><img src="add.svg" alt="Add icon" width="24" height="24"></button>
+        <button id="save">Save</button>
     </div>
       
 </body>
