@@ -158,21 +158,8 @@ function setNodeBorderByFamilia() {
                 break;
         }
         node.findObject("SHAPE").stroke = color;
+        node.findObject("SHAPE").fill = "white";
     })
-}
-
-function highlightGuitars() {
-    if (isHighlighted) {
-        setNodeBorderByFamilia();
-        isHighlighted = false;
-        return;
-    }
-    myDiagram.nodes.each(function (node) {
-        if (node.data.instrumento == "Guitarra") {
-            node.findObject("SHAPE").stroke = "yellow";
-        }
-    })
-    isHighlighted = true;
 }
 
 function filter() {
@@ -200,23 +187,17 @@ function filter() {
     if (estagio !== "") {
         nodeData.estagio = estagio;
     }
-    
+
     const findNodes = myDiagram.findNodesByExample(nodeData);
-findNodes.each(node =>  node.findObject("SHAPE").stroke = "yellow");
+    if (Object.keys(nodeData).length !== 0) {
+        findNodes.each(node => {
+            node.findObject("SHAPE").stroke = "Gold";
+            node.findObject("SHAPE").fill = "#5CE1E6";
+        });
+        
+    }
 
 }
-
-const arrowBtn = document.querySelector('#arrow-btn');
-const topBar = document.querySelector('#top-bar');
-
-function closeTopBar(){
-    slideOut(topBar,1000);
-}
-
-function openTopBar(){
-    slideIn(topBar300);
-}
-
 
 let myHeaders = new Headers();
 let url = 'https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/getAll';

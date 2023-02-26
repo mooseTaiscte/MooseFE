@@ -22,7 +22,7 @@ html, body{
 }
 #top-bar {
   position: fixed;
-  top: -350;
+  top: 0;
   left: 0;
   right: 0;
   height: 50px;
@@ -35,8 +35,6 @@ html, body{
   z-index: 10;
   cursor: pointer;
 }
-
-
 
 #top-bar input[type="text"] {
   border: none;
@@ -51,22 +49,30 @@ html, body{
 #top-bar input[type="text"]:focus {
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
 }
-#arrow-btn {
-  position: absolute;
-  top: 50px;
-  left: 10px;
-  background-color: white;
-  width: 40px;
-  height: 40px;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  cursor: pointer;
-}
 
 #filtrar {
-  margin-bottom: 10px;
+  margin-left: 5px;
+  width: 75%;
+  height: 75%;
+  background-color: #0077ff;
+  color: #fff;
+  border-radius: 30px;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+}
+
+#filtrar:hover {
+  background-color: #0055cc;
+  cursor: pointer;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+#filtrar:focus {
+  outline: none;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 #sidebar {
