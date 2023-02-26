@@ -307,6 +307,9 @@ function showNodeDetails(e, node) {
     showTunanteImage(node.data.key)
     const save = document.getElementById('save')
     save.onclick = function(){saveNodeToDB(node)}
+
+    const add=document.getElementById("add-button")
+    add.onclick=function(){addSelectedFieldToSideBar(node)}
 }
 
 function showSideBarPanel() {
@@ -401,10 +404,11 @@ function addFieldsToSideBarDropdown(node) {
     }
 }
 
-function addSelectedFieldToSideBar() {
+function addSelectedFieldToSideBar(node) {
     
     const selectedOption = dropdown.options[dropdown.selectedIndex];
     const selectedKey = selectedOption.text;
+    const selectedValue=selectedOption.value;
     if (selectedKey) {
         const p = document.createElement('p');
         const keyText = selectedKey.charAt(0).toUpperCase() + selectedKey.slice(1);
@@ -414,7 +418,7 @@ function addSelectedFieldToSideBar() {
         input.placeholder = 'Value';
         input.value = '';
         input.addEventListener('input', () => {
-            node.data[selectedKey] = input.value;
+            node.data[selectedValue] = input.value;
         });
         p.appendChild(input);
         content.appendChild(p);
