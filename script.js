@@ -57,7 +57,6 @@ function init(json) {
                                 row: 0, column: 0, columnSpan: 5,
                                 textAlign: "center",
                                 font: "14pt Segoe UI,sans-serif",
-                                editable: true,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 25)
                             },
@@ -68,7 +67,6 @@ function init(json) {
                         $(go.TextBlock, "Placeholder",
                             {
                                 row: 1, column: 1, columnSpan: 4,
-                                editable: true,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3)
@@ -80,7 +78,6 @@ function init(json) {
                         $(go.TextBlock, "Placeholder",
                             {
                                 row: 2, column: 1, columnSpan: 4,
-                                editable: true,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3)
@@ -92,7 +89,6 @@ function init(json) {
                         $(go.TextBlock, "Placeholder",
                             {
                                 row: 3, column: 1, columnSpan: 4,
-                                editable: true,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3)
@@ -104,7 +100,6 @@ function init(json) {
                         $(go.TextBlock, "Placeholder",
                             {
                                 row: 4, column: 1, columnSpan: 4,
-                                editable: true,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3)
