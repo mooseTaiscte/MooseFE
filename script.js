@@ -57,7 +57,6 @@ function init(json) {
                                 row: 0, column: 0, columnSpan: 5,
                                 textAlign: "center",
                                 font: "14pt Segoe UI,sans-serif",
-                                editable: true,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 25)
                             },
@@ -68,7 +67,6 @@ function init(json) {
                         $(go.TextBlock, "Placeholder",
                             {
                                 row: 1, column: 1, columnSpan: 4,
-                                editable: true,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3)
@@ -80,7 +78,6 @@ function init(json) {
                         $(go.TextBlock, "Placeholder",
                             {
                                 row: 2, column: 1, columnSpan: 4,
-                                editable: true,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3)
@@ -92,7 +89,6 @@ function init(json) {
                         $(go.TextBlock, "Placeholder",
                             {
                                 row: 3, column: 1, columnSpan: 4,
-                                editable: true,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3)
@@ -104,7 +100,6 @@ function init(json) {
                         $(go.TextBlock, "Placeholder",
                             {
                                 row: 4, column: 1, columnSpan: 4,
-                                editable: true,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3)
@@ -276,8 +271,7 @@ function deleteAll() {
         .catch(error => console.log('error', error));
 }
 
-function save() {
-
+function saveNodeToDB(node) {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
     myHeaders.append("Content-Type", "application/json");
@@ -286,18 +280,15 @@ function save() {
     var requestOptions = {
         method: 'POST',
         headers: myHeaders,
-        body: JSON.stringify(JSON.parse(myDiagram.model.toJson())["nodeDataArray"]),
+        body: "[" + JSON.stringify(node.data) + "]",
     };
-
-    console.log(JSON.parse(myDiagram.model.toJson())["nodeDataArray"])
-    deleteAll()
 
     fetch("https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/create", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
 
-    myDiagram.isModified = false;
+    myDiagram.updateAllTargetBindings()
 }
 
 
@@ -308,6 +299,8 @@ function showNodeDetails(e, node) {
     addFieldsToSideBarDropdown()
     showAllNodeDetailOnSideBar(node)
     showTunanteImage(node.data.key)
+    const save = document.getElementById('save')
+    save.onclick = function(){saveNodeToDB(node)}
 }
 
 function showSideBarPanel() {
