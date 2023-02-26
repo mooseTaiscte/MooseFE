@@ -140,14 +140,10 @@ var requestOptions = {
     redirect: 'follow'
 };
 
-let isFirstLoad = true;
-
-
-function loadTree() {
-    if (isFirstLoad) {
-        isFirstLoad = false;
+function loadTree(forceLoad) {
+   
         const cachedData = localStorage.getItem('treeData');
-        if (cachedData) {
+        if (cachedData&&!forceLoad) {
             generateTree(JSON.parse(cachedData));
         } else {
             fetch(url, requestOptions)
@@ -157,10 +153,10 @@ function loadTree() {
                     generateTree(data);
                 });
         }
-    }
+    
 }
 
-window.addEventListener("load", loadTree);
+window.addEventListener("load", loadTree(false));
 
 function generateTree(json) {
     console.log(json)
@@ -295,6 +291,9 @@ function saveNodeToDB(node) {
         .catch(error => console.log('error', error));
 
     myDiagram.updateAllTargetBindings()
+
+    loadTree(true);
+
 }
 
 
