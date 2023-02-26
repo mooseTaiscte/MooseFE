@@ -217,8 +217,7 @@ function deleteAll() {
         .catch(error => console.log('error', error));
 }
 
-function save() {
-
+function saveNodeToDB(node) {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
     myHeaders.append("Content-Type", "application/json");
@@ -227,18 +226,15 @@ function save() {
     var requestOptions = {
         method: 'POST',
         headers: myHeaders,
-        body: JSON.stringify(JSON.parse(myDiagram.model.toJson())["nodeDataArray"]),
+        body: "[" + JSON.stringify(node.data) + "]",
     };
-
-    console.log(JSON.parse(myDiagram.model.toJson())["nodeDataArray"])
-    deleteAll()
 
     fetch("https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/create", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
 
-    myDiagram.isModified = false;
+    myDiagram.updateAllTargetBindings()
 }
 
 
@@ -249,6 +245,8 @@ function showNodeDetails(e, node) {
     addFieldsToSideBarDropdown()
     showAllNodeDetailOnSideBar(node)
     showTunanteImage(node.data.key)
+    const save = document.getElementById('save')
+    save.onclick = function(){saveNodeToDB(node)}
 }
 
 function showSideBarPanel(){
