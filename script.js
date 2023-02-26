@@ -388,6 +388,8 @@ function addFieldsToSideBarDropdown(node) {
         ["curso","Curso"],
         ["gender","Género"],
         ["estagio","Hierarquia"],
+        ["naipe","Naipe"]
+
 
     ]);
     const existingValues = new Set(Object.keys(node.data).filter(key => node.data[key] !== null && node.data[key] !== ""));
