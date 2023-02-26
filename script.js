@@ -95,14 +95,15 @@ function init(json) {
                             },
                             new go.Binding("text", "naipe").makeTwoWay()),
                         //ESTAGIO
-                        $(go.TextBlock, "Title: ", "Estadio:",
+                        $(go.TextBlock, "Title: ", "Estagio:",
                             { row: 4, column: 0 }),
-                        $(go.TextBlock, "Placeholder",
+                            $(go.TextBlock, "Placeholder",
                             {
                                 row: 4, column: 1, columnSpan: 4,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
-                                margin: new go.Margin(2, 0, 0, 3)
+                                margin: new go.Margin(2, 0, 0, 3),
+                                name:"estagio"
                             },
                             new go.Binding("text", "estagio").makeTwoWay()),
                     )
@@ -118,7 +119,20 @@ function init(json) {
                 new go.Binding("opacity", "isSelected", s => s ? 1 : 0).ofObject()
             ),
         );
-
+        
+        //This fixes the gender on the text blocks
+           
+        myDiagram.nodes.each(function (node) {
+            const textBlock = node.findObject("estagio");
+                if (node.data.gender == "F") {
+                    if (node.data.estagio == "Caloiro") {
+                        textBlock.text = "Caloira";
+                    }
+                    if (node.data.estagio == "Veterano") {
+                        textBlock.text = "Veterana";
+                    }
+                }
+        })
 
 
     myDiagram.linkTemplate = new go.Link(
@@ -141,19 +155,19 @@ var requestOptions = {
 };
 
 function loadTree(forceLoad) {
-   
-        const cachedData = localStorage.getItem('treeData');
-        if (cachedData&&!forceLoad) {
-            generateTree(JSON.parse(cachedData));
-        } else {
-            fetch(url, requestOptions)
-                .then(res => res.json())
-                .then(data => {
-                    localStorage.setItem('treeData', JSON.stringify(data));
-                    generateTree(data);
-                });
-        }
-    
+
+    const cachedData = localStorage.getItem('treeData');
+    if (cachedData && !forceLoad) {
+        generateTree(JSON.parse(cachedData));
+    } else {
+        fetch(url, requestOptions)
+            .then(res => res.json())
+            .then(data => {
+                localStorage.setItem('treeData', JSON.stringify(data));
+                generateTree(data);
+            });
+    }
+
 }
 
 window.addEventListener("load", loadTree(false));
@@ -223,7 +237,7 @@ function filter() {
             node.findObject("SHAPE").stroke = "Gold";
             node.findObject("SHAPE").fill = "#5CE1E6";
         });
-        
+
     }
 }
 function capitalizeFirstLetter(string) {
@@ -305,10 +319,10 @@ function showNodeDetails(e, node) {
     showAllNodeDetailOnSideBar(node)
     showTunanteImage(node.data.key)
     const save = document.getElementById('save')
-    save.onclick = function(){saveNodeToDB(node)}
+    save.onclick = function () { saveNodeToDB(node) }
 
-    const add=document.getElementById("add-button")
-    add.onclick=function(){addSelectedFieldToSideBar(node)}
+    const add = document.getElementById("add-button")
+    add.onclick = function () { addSelectedFieldToSideBar(node) }
 }
 
 function showSideBarPanel() {
@@ -357,6 +371,13 @@ function showAllNodeDetailOnSideBar(node) {
             else if (key == 'padrinhoName' && node.data.gender == "M") {
                 p.textContent = `Madrinha: ${node.data[key]}`;
             }
+            if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Caloiro") {
+                p.textContent = `Estagio: Caloira`;
+            }
+
+            if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Veterano") {
+                p.textContent = `Estagio: Veterana`;
+            }
             else {
                 p.textContent = `${keyText}: `;
                 const input = document.createElement('input');
@@ -375,27 +396,27 @@ function showAllNodeDetailOnSideBar(node) {
 
 function addFieldsToSideBarDropdown(node) {
 
-    dropdown.innerHTML="";
+    dropdown.innerHTML = "";
 
-    const possibleValues=new Map([
-        ["localTuno","Local de Passagem a Tuno"],
-        ["dataTuno","Data da Passagem a Tuno"],
-        ["localCaloiro","Local de Subida a Palco"],
-        ["dataCaloiro","Data da Subida a Palco"],
-        ["dataSaida","Data da Saída da Tuna"],
-        ["localSaída","Local da Saída da Tuna"],
-        ["instrumento","Instrumento"],
-        ["curso","Curso"],
-        ["gender","Género"],
-        ["estagio","Hierarquia"],
-        ["naipe","Naipe"]
+    const possibleValues = new Map([
+        ["localTuno", "Local de Passagem a Tuno"],
+        ["dataTuno", "Data da Passagem a Tuno"],
+        ["localCaloiro", "Local de Subida a Palco"],
+        ["dataCaloiro", "Data da Subida a Palco"],
+        ["dataSaida", "Data da Saída da Tuna"],
+        ["localSaída", "Local da Saída da Tuna"],
+        ["instrumento", "Instrumento"],
+        ["curso", "Curso"],
+        ["gender", "Género"],
+        ["estagio", "Hierarquia"],
+        ["naipe", "Naipe"]
 
 
     ]);
     const existingValues = new Set(Object.keys(node.data).filter(key => node.data[key] !== null && node.data[key] !== ""));
     console.log([...existingValues]); // log the values in the Set object
     for (const [value, text] of possibleValues) {
-        if(!existingValues.has(value) && ((node.data[value] === "" || node.data[value] === null))){
+        if (!existingValues.has(value) && ((node.data[value] === "" || node.data[value] === null))) {
             const option = document.createElement("option");
             option.value = value;
             option.text = text;
@@ -406,10 +427,10 @@ function addFieldsToSideBarDropdown(node) {
 }
 
 function addSelectedFieldToSideBar(node) {
-    
+
     const selectedOption = dropdown.options[dropdown.selectedIndex];
     const selectedKey = selectedOption.text;
-    const selectedValue=selectedOption.value;
+    const selectedValue = selectedOption.value;
     if (selectedKey) {
         const p = document.createElement('p');
         const keyText = selectedKey.charAt(0).toUpperCase() + selectedKey.slice(1);
