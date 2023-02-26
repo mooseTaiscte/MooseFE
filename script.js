@@ -168,19 +168,19 @@ function filter() {
 
     let nodeData = {};
     if (instrumento !== "") {
-        nodeData.instrumento = instrumento;
+        nodeData.instrumento = capitalizeFirstLetter(instrumento);
     }
     if (familia !== "") {
-        nodeData.familia = familia;
+        nodeData.familia = capitalizeFirstLetter(familia);
     }
     if (naipe !== "") {
-        nodeData.naipe = naipe;
+        nodeData.naipe = capitalizeFirstLetter(naipe);
     }
     if (curso !== "") {
-        nodeData.curso = curso;
+        nodeData.curso = capitalizeFirstLetter(curso);
     }
     if (estagio !== "") {
-        nodeData.estagio = estagio;
+        nodeData.estagio = capitalizeFirstLetter(estagio);
     }
 
     const findNodes = myDiagram.findNodesByExample(nodeData);
@@ -191,7 +191,9 @@ function filter() {
         });
         
     }
-
+}
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 let myHeaders = new Headers();
