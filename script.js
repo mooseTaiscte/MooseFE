@@ -130,7 +130,44 @@ function init(json) {
     setNodeBorderByFamilia()
 
 }
-let isHighlighted = false;
+
+let myHeaders = new Headers();
+let url = 'https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/getAll';
+myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
+var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+};
+
+let isFirstLoad = true;
+
+
+function loadTree() {
+    if (isFirstLoad) {
+        isFirstLoad = false;
+        const cachedData = localStorage.getItem('treeData');
+        if (cachedData) {
+            generateTree(JSON.parse(cachedData));
+        } else {
+            fetch(url, requestOptions)
+                .then(res => res.json())
+                .then(data => {
+                    localStorage.setItem('treeData', JSON.stringify(data));
+                    generateTree(data);
+                });
+        }
+    }
+}
+
+window.addEventListener("load", loadTree);
+
+function generateTree(json) {
+    console.log(json)
+    init(json)
+}
+
+// Set colors to Tunantes by family value
 function setNodeBorderByFamilia() {
     myDiagram.nodes.each(function (node) {
         const familia = node.data.familia;
@@ -157,6 +194,7 @@ function setNodeBorderByFamilia() {
     })
 }
 
+// Triggered by the top bar Filtrar Button
 function filter() {
     setNodeBorderByFamilia()
     const instrumento = document.getElementById('instrumento-input').value;
@@ -196,42 +234,7 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-let myHeaders = new Headers();
-let url = 'https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/getAll';
-myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
-var requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    redirect: 'follow'
-};
-
-let isFirstLoad = true;
-
-
-function loadTree() {
-    if (isFirstLoad) {
-        isFirstLoad = false;
-        const cachedData = localStorage.getItem('treeData');
-        if (cachedData) {
-            generateTree(JSON.parse(cachedData));
-        } else {
-            fetch(url, requestOptions)
-                .then(res => res.json())
-                .then(data => {
-                    localStorage.setItem('treeData', JSON.stringify(data));
-                    generateTree(data);
-                });
-        }
-    }
-}
-
-window.addEventListener("load", loadTree);
-
-function generateTree(json) {
-    console.log(json)
-    init(json)
-}
-
+//Not in use
 function addEmployee(node,) {
     if (!node) return;
     const thisemp = node.data;
@@ -257,6 +260,7 @@ function addEmployee(node,) {
     myDiagram.commandHandler.scrollToPart(newnode);
 }
 
+//Not in use
 function deleteAll() {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
@@ -298,7 +302,7 @@ function showNodeDetails(e, node) {
     clearSibeBarContent()
     showSideBarPanel()
     addAlcunhaToSideBar(node.data.alcunha)
-    addFieldsToSideBarDropdown()
+    addFieldsToSideBarDropdown(node)
     showAllNodeDetailOnSideBar(node)
     showTunanteImage(node.data.key)
     const save = document.getElementById('save')
@@ -367,18 +371,40 @@ function showAllNodeDetailOnSideBar(node) {
     });
 }
 
-function addFieldsToSideBarDropdown() {
-    dropdown.innerHTML = `
-        <option value="">Novo Campo</option>
-        <option value="localTuno">Local Tuno</option>
-        <option value="localSaida">Local Cota</option>
-        <option value="dataTuno">Data Tuno</option>
-        <option value="dataCota">Data Cota</option>
-    `;
+function addFieldsToSideBarDropdown(node) {
+
+    dropdown.innerHTML="";
+
+    const possibleValues=new Map([
+        ["localTuno","Local de Passagem a Tuno"],
+        ["dataTuno","Data da Passagem a Tuno"],
+        ["localCaloiro","Local de Subida a Palco"],
+        ["dataCaloiro","Data da Subida a Palco"],
+        ["dataSaida","Data da Saída da Tuna"],
+        ["localSaída","Local da Saída da Tuna"],
+        ["instrumento","Instrumento"],
+        ["curso","Curso"],
+        ["gender","Género"],
+        ["estagio","Hierarquia"],
+
+    ]);
+    const existingValues = new Set(Object.keys(node.data).filter(key => node.data[key] !== null && node.data[key] !== ""));
+    console.log([...existingValues]); // log the values in the Set object
+    for (const [value, text] of possibleValues) {
+        if(!existingValues.has(value) && ((node.data[value] === "" || node.data[value] === null))){
+            const option = document.createElement("option");
+            option.value = value;
+            option.text = text;
+            dropdown.appendChild(option);
+            existingValues.add(value);
+        }
+    }
 }
 
 function addSelectedFieldToSideBar() {
-    const selectedKey = dropdown.value;
+    
+    const selectedOption = dropdown.options[dropdown.selectedIndex];
+    const selectedKey = selectedOption.text;
     if (selectedKey) {
         const p = document.createElement('p');
         const keyText = selectedKey.charAt(0).toUpperCase() + selectedKey.slice(1);
@@ -392,6 +418,7 @@ function addSelectedFieldToSideBar() {
         });
         p.appendChild(input);
         content.appendChild(p);
+        dropdown.removeChild(selectedOption);
     }
 };
 
