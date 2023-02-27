@@ -110,8 +110,8 @@ function init(json) {
                                 margin: new go.Margin(2, 0, 0, 3)
                             },
                             new go.Binding("text", "naipe").makeTwoWay()),
-                        //ESTAGIO
-                        $(go.TextBlock, "Title: ", "Estagio:",
+                        //Hierarquia
+                        $(go.TextBlock, "Title: ", "Hierarquia:",
                             { row: 4, column: 0 }),
                         $(go.TextBlock, "Placeholder",
                             {
@@ -119,7 +119,7 @@ function init(json) {
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3),
-                                name: "estagio"
+                                name: "hierarquia"
                             },
                             new go.Binding("text", "estagio").makeTwoWay()),
                     )
@@ -139,7 +139,7 @@ function init(json) {
     //This fixes the gender on the text blocks
 
     myDiagram.nodes.each(function (node) {
-        const textBlock = node.findObject("estagio");
+        const textBlock = node.findObject("hierarquia");
         if (node.data.gender == "F") {
             if (node.data.estagio == "Caloiro") {
                 textBlock.text = "Caloira";
@@ -230,7 +230,7 @@ function filter() {
     const familia = document.getElementById('familia-input').value;
     const naipe = document.getElementById('naipe-input').value;
     const curso = document.getElementById('curso-input').value;
-    const estagio = document.getElementById('estagio-input').value;
+    const hierarquia = document.getElementById('hierarquia-input').value;
 
 
     let nodeData = {};
@@ -246,8 +246,8 @@ function filter() {
     if (curso !== "") {
         nodeData.curso = capitalizeFirstLetter(curso);
     }
-    if (estagio !== "") {
-        nodeData.estagio = capitalizeFirstLetter(estagio);
+    if (hierarquia !== "") {
+        nodeData.estagio = capitalizeFirstLetter(hierarquia);
     }
 
     const findNodes = myDiagram.findNodesByExample(nodeData);
@@ -391,11 +391,11 @@ function showAllNodeDetailOnSideBar(node) {
                 p.textContent = `Madrinha: ${node.data[key]}`;
             }
             else if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Caloiro") {
-                p.textContent = `Estagio: Caloira`;
+                p.textContent = `Hierarquia: Caloira`;
             }
 
             else if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Veterano") {
-                p.textContent = `Estagio: Veterana`;
+                p.textContent = `Hierarquia: Veterana`;
             }
             else {
                 const tag = sideBarValues.get(key);
