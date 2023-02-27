@@ -18,7 +18,6 @@ const sideBarValues = new Map([
     ["naipe", "Naipe"],
     ["padrinhoName", "Padrinho"],
     ["nome", "Nome"],
-    ["dataNascimento", "Data de Nascimento"],
     ["dataIngressao", "Data de Entrada"]
 
 ]);
@@ -114,13 +113,13 @@ function init(json) {
                         //ESTAGIO
                         $(go.TextBlock, "Title: ", "Estagio:",
                             { row: 4, column: 0 }),
-                            $(go.TextBlock, "Placeholder",
+                        $(go.TextBlock, "Placeholder",
                             {
                                 row: 4, column: 1, columnSpan: 4,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3),
-                                name:"estagio"
+                                name: "estagio"
                             },
                             new go.Binding("text", "estagio").makeTwoWay()),
                     )
@@ -174,8 +173,8 @@ var requestOptions = {
 function loadTree(forceLoad) {
 
     const cachedData = localStorage.getItem('treeData');
-    if(forceLoad){
-        myDiagram.div=null;
+    if (forceLoad) {
+        myDiagram.div = null;
     }
     if (cachedData && !forceLoad) {
         generateTree(JSON.parse(cachedData));
@@ -399,7 +398,7 @@ function showAllNodeDetailOnSideBar(node) {
                 p.textContent = `Estagio: Veterana`;
             }
             else {
-                const tag= sideBarValues.get(key);
+                const tag = sideBarValues.get(key);
                 p.textContent = `${tag}: `;
                 const input = document.createElement('input');
                 input.type = 'text';
