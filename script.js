@@ -18,7 +18,8 @@ const sideBarValues = new Map([
     ["naipe", "Naipe"],
     ["padrinhoName", "Padrinho"],
     ["nome", "Nome"],
-    ["dataIngressao", "Data de Entrada"]
+    ["dataIngressao", "Data de Entrada"],
+    ["familia", "Familia"],
 
 ]);
 function init(json) {
