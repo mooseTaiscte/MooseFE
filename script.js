@@ -4,7 +4,24 @@ const sideBar = document.getElementById('sidebar');
 const addButton = document.getElementById('add-button');
 const content = document.getElementById('sidebar-content');
 const dropdown = document.getElementById('select-field');
+const sideBarValues = new Map([
+    ["localTuno", "Local de Passagem a Tuno"],
+    ["dataTuno", "Data da Passagem a Tuno"],
+    ["localCaloiro", "Local de Subida a Palco"],
+    ["dataCaloiro", "Data da Subida a Palco"],
+    ["dataSaida", "Data da Saída da Tuna"],
+    ["localSaída", "Local da Saída da Tuna"],
+    ["instrumento", "Instrumento"],
+    ["curso", "Curso"],
+    ["gender", "Género"],
+    ["estagio", "Hierarquia"],
+    ["naipe", "Naipe"],
+    ["padrinhoName", "Padrinho"],
+    ["nome", "Nome"],
+    ["dataNascimento", "Data de Nascimento"],
+    ["dataIngressao", "Data de Entrada"]
 
+]);
 function init(json) {
     $ = go.GraphObject.make;
     myDiagram =
@@ -119,20 +136,20 @@ function init(json) {
                 new go.Binding("opacity", "isSelected", s => s ? 1 : 0).ofObject()
             ),
         );
-        
-        //This fixes the gender on the text blocks
-           
-        myDiagram.nodes.each(function (node) {
-            const textBlock = node.findObject("estagio");
-                if (node.data.gender == "F") {
-                    if (node.data.estagio == "Caloiro") {
-                        textBlock.text = "Caloira";
-                    }
-                    if (node.data.estagio == "Veterano") {
-                        textBlock.text = "Veterana";
-                    }
-                }
-        })
+
+    //This fixes the gender on the text blocks
+
+    myDiagram.nodes.each(function (node) {
+        const textBlock = node.findObject("estagio");
+        if (node.data.gender == "F") {
+            if (node.data.estagio == "Caloiro") {
+                textBlock.text = "Caloira";
+            }
+            if (node.data.estagio == "Veterano") {
+                textBlock.text = "Veterana";
+            }
+        }
+    })
 
 
     myDiagram.linkTemplate = new go.Link(
@@ -382,7 +399,8 @@ function showAllNodeDetailOnSideBar(node) {
                 p.textContent = `Estagio: Veterana`;
             }
             else {
-                p.textContent = `${keyText}: `;
+                const tag= sideBarValues.get(key);
+                p.textContent = `${tag}: `;
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.placeholder = 'Value';
@@ -401,23 +419,8 @@ function addFieldsToSideBarDropdown(node) {
 
     dropdown.innerHTML = "";
 
-    const possibleValues = new Map([
-        ["localTuno", "Local de Passagem a Tuno"],
-        ["dataTuno", "Data da Passagem a Tuno"],
-        ["localCaloiro", "Local de Subida a Palco"],
-        ["dataCaloiro", "Data da Subida a Palco"],
-        ["dataSaida", "Data da Saída da Tuna"],
-        ["localSaída", "Local da Saída da Tuna"],
-        ["instrumento", "Instrumento"],
-        ["curso", "Curso"],
-        ["gender", "Género"],
-        ["estagio", "Hierarquia"],
-        ["naipe", "Naipe"]
-
-
-    ]);
     const existingValues = new Set(Object.keys(node.data).filter(key => node.data[key] !== null && node.data[key] !== ""));
-    for (const [value, text] of possibleValues) {
+    for (const [value, text] of sideBarValues) {
         if (!existingValues.has(value) && ((node.data[value] === "" || node.data[value] === null))) {
             const option = document.createElement("option");
             option.value = value;
