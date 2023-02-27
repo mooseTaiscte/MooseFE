@@ -157,6 +157,9 @@ var requestOptions = {
 function loadTree(forceLoad) {
 
     const cachedData = localStorage.getItem('treeData');
+    if(forceLoad){
+        myDiagram.div=null;
+    }
     if (cachedData && !forceLoad) {
         generateTree(JSON.parse(cachedData));
     } else {
