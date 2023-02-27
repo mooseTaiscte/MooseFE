@@ -371,11 +371,11 @@ function showAllNodeDetailOnSideBar(node) {
             else if (key == 'padrinhoName' && node.data.gender == "M") {
                 p.textContent = `Madrinha: ${node.data[key]}`;
             }
-            if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Caloiro") {
+            else if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Caloiro") {
                 p.textContent = `Estagio: Caloira`;
             }
 
-            if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Veterano") {
+            else if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Veterano") {
                 p.textContent = `Estagio: Veterana`;
             }
             else {
@@ -414,7 +414,6 @@ function addFieldsToSideBarDropdown(node) {
 
     ]);
     const existingValues = new Set(Object.keys(node.data).filter(key => node.data[key] !== null && node.data[key] !== ""));
-    console.log([...existingValues]); // log the values in the Set object
     for (const [value, text] of possibleValues) {
         if (!existingValues.has(value) && ((node.data[value] === "" || node.data[value] === null))) {
             const option = document.createElement("option");
