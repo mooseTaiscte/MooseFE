@@ -56,8 +56,10 @@ function init(json) {
                             imageStretch: go.GraphObject.UniformToFill
                             //go.GraphObject.Uniform also usable
                         },
-                        new go.Binding("source", "key", function (key) {
-                            return "https://moosepictures.s3.eu-central-1.amazonaws.com/" + key + ".jpg";
+                        new go.Binding("source", "", function (data) {
+                            if (data.hasImage) {
+                                return "https://moosepictures.s3.eu-central-1.amazonaws.com/" + data.key + ".jpg";
+                            }
                         })
 
                     ),
@@ -122,7 +124,18 @@ function init(json) {
                                 margin: new go.Margin(2, 0, 0, 3),
                                 name: "hierarquia"
                             },
-                            new go.Binding("text", "estagio").makeTwoWay()),
+                            new go.Binding("text", "", function (data) {
+                                if (data.gender == "F") {
+                                    if (data.estagio == "Caloiro") {
+                                        return "Caloira";
+                                    }
+                                    if (data.estagio == "Veterano") {
+                                        return "Veterana";
+                                    }
+                                }
+                                return data.hierarquia;
+
+                            }).makeTwoWay()),
                     )
                 )
             ),
@@ -136,21 +149,6 @@ function init(json) {
                 new go.Binding("opacity", "isSelected", s => s ? 1 : 0).ofObject()
             ),
         );
-
-    //This fixes the gender on the text blocks
-
-    myDiagram.nodes.each(function (node) {
-        const textBlock = node.findObject("hierarquia");
-        if (node.data.gender == "F") {
-            if (node.data.estagio == "Caloiro") {
-                textBlock.text = "Caloira";
-            }
-            if (node.data.estagio == "Veterano") {
-                textBlock.text = "Veterana";
-            }
-        }
-    })
-
 
     myDiagram.linkTemplate = new go.Link(
         // default routing is go.Link.Normal
@@ -383,31 +381,37 @@ function showAllNodeDetailOnSideBar(node) {
     Object.keys(node.data).forEach(key => {
         if (key !== 'key' && key !== '__gohashid' && key !== 'id' && key !== 'alcunha' && key !== 'parent' && node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
+            const tag = sideBarValues.get(key);
+            p.textContent = `${tag}: `;
             const keyText = key.charAt(0).toUpperCase() + key.slice(1);
             const valueText = node.data[key];
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Value';
             if (key == 'padrinhoName' && node.data.gender == "F") {
                 p.textContent = `Padrinho: ${node.data[key]}`;
             }
             else if (key == 'padrinhoName' && node.data.gender == "M") {
                 p.textContent = `Madrinha: ${node.data[key]}`;
             }
-            else if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Caloiro") {
-                p.textContent = `Hierarquia: Caloira`;
-            }
-
-            else if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Veterano") {
-                p.textContent = `Hierarquia: Veterana`;
+            else if(key == 'estagio' && node.data.gender == "F"){
+                if(node.data[key] == "Caloiro"){
+                    input.value="Caloira"
+                }
+                if(node.data[key] == "Veterano"){
+                    input.value="Veterana"
+                }
+                input.addEventListener('input', () => {
+                    node.data[key] = input.value;
+                });
+                p.appendChild(input);
             }
             else {
-                const tag = sideBarValues.get(key);
-                p.textContent = `${tag}: `;
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.placeholder = 'Value';
                 input.value = valueText;
                 input.addEventListener('input', () => {
                     node.data[key] = input.value;
                 });
+                
                 p.appendChild(input);
             }
             content.appendChild(p);
