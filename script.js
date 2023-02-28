@@ -4,7 +4,24 @@ const sideBar = document.getElementById('sidebar');
 const addButton = document.getElementById('add-button');
 const content = document.getElementById('sidebar-content');
 const dropdown = document.getElementById('select-field');
+const sideBarValues = new Map([
+    ["localTuno", "Local de Passagem a Tuno"],
+    ["dataTuno", "Data da Passagem a Tuno"],
+    ["localCaloiro", "Local de Subida a Palco"],
+    ["dataCaloiro", "Data da Subida a Palco"],
+    ["dataSaida", "Data da Saída da Tuna"],
+    ["localSaída", "Local da Saída da Tuna"],
+    ["instrumento", "Instrumento"],
+    ["curso", "Curso"],
+    ["gender", "Género"],
+    ["estagio", "Hierarquia"],
+    ["naipe", "Naipe"],
+    ["padrinhoName", "Padrinho"],
+    ["nome", "Nome"],
+    ["dataIngressao", "Data de Entrada"],
+    ["familia", "Familia"],
 
+]);
 function init(json) {
     $ = go.GraphObject.make;
     myDiagram =
@@ -94,15 +111,16 @@ function init(json) {
                                 margin: new go.Margin(2, 0, 0, 3)
                             },
                             new go.Binding("text", "naipe").makeTwoWay()),
-                        //ESTAGIO
-                        $(go.TextBlock, "Title: ", "Estadio:",
+                        //Hierarquia
+                        $(go.TextBlock, "Title: ", "Hierarquia:",
                             { row: 4, column: 0 }),
                         $(go.TextBlock, "Placeholder",
                             {
                                 row: 4, column: 1, columnSpan: 4,
                                 isMultiline: false,
                                 minSize: new go.Size(10, 14),
-                                margin: new go.Margin(2, 0, 0, 3)
+                                margin: new go.Margin(2, 0, 0, 3),
+                                name: "hierarquia"
                             },
                             new go.Binding("text", "estagio").makeTwoWay()),
                     )
@@ -119,6 +137,19 @@ function init(json) {
             ),
         );
 
+    //This fixes the gender on the text blocks
+
+    myDiagram.nodes.each(function (node) {
+        const textBlock = node.findObject("hierarquia");
+        if (node.data.gender == "F") {
+            if (node.data.estagio == "Caloiro") {
+                textBlock.text = "Caloira";
+            }
+            if (node.data.estagio == "Veterano") {
+                textBlock.text = "Veterana";
+            }
+        }
+    })
 
 
     myDiagram.linkTemplate = new go.Link(
@@ -127,7 +158,7 @@ function init(json) {
         { routing: go.Link.Orthogonal, corner: 5 })
         // the link path, a Shape
         .add(new go.Shape({ strokeWidth: 3, stroke: "#555" }))
-
+    setNodeBorderByFamilia()
 
 }
 
@@ -140,44 +171,107 @@ var requestOptions = {
     redirect: 'follow'
 };
 
-let isFirstLoad = true;
+function loadTree(forceLoad) {
 
-
-function loadTree() {
-    if (isFirstLoad) {
-        console.log("hehehe");
-        isFirstLoad = false;
-        const cachedData = localStorage.getItem('treeData');
-        if (cachedData) {
-            generateTree(JSON.parse(cachedData));
-        } else {
-            fetch(url, requestOptions)
-                .then(res => res.json())
-                .then(data => {
-                    localStorage.setItem('treeData', JSON.stringify(data));
-                    generateTree(data);
-                });
-        }
+    const cachedData = localStorage.getItem('treeData');
+    if (forceLoad) {
+        myDiagram.div = null;
     }
+    if (cachedData && !forceLoad) {
+        generateTree(JSON.parse(cachedData));
+    } else {
+        fetch(url, requestOptions)
+            .then(res => res.json())
+            .then(data => {
+                localStorage.setItem('treeData', JSON.stringify(data));
+                generateTree(data);
+            });
+    }
+
 }
 
-
-window.addEventListener("load", loadTree);
-
-
+window.addEventListener("load", loadTree(false));
 
 function generateTree(json) {
     console.log(json)
     init(json)
 }
 
+// Set colors to Tunantes by family value
+function setNodeBorderByFamilia() {
+    myDiagram.nodes.each(function (node) {
+        const familia = node.data.familia;
+        let color = "black";
+        switch (familia) {
+            case "Almeida":
+                color = "pink";
+                break;
+            case "Bastos":
+                color = "darkblue";
+                break;
+            case "Gomes":
+                color = "mediumpurple";
+                break;
+            case "Ramos":
+                color = "green";
+                break;
+            case "Lopes":
+                color = "lime";
+                break;
+        }
+        node.findObject("SHAPE").stroke = color;
+        node.findObject("SHAPE").fill = "white";
+    })
+}
+
+// Triggered by the top bar Filtrar Button
+function filter() {
+    setNodeBorderByFamilia()
+    const instrumento = document.getElementById('instrumento-input').value;
+    const familia = document.getElementById('familia-input').value;
+    const naipe = document.getElementById('naipe-input').value;
+    const curso = document.getElementById('curso-input').value;
+    const hierarquia = document.getElementById('hierarquia-input').value;
+
+
+    let nodeData = {};
+    if (instrumento !== "") {
+        nodeData.instrumento = capitalizeFirstLetter(instrumento);
+    }
+    if (familia !== "") {
+        nodeData.familia = capitalizeFirstLetter(familia);
+    }
+    if (naipe !== "") {
+        nodeData.naipe = capitalizeFirstLetter(naipe);
+    }
+    if (curso !== "") {
+        nodeData.curso = capitalizeFirstLetter(curso);
+    }
+    if (hierarquia !== "") {
+        nodeData.estagio = capitalizeFirstLetter(hierarquia);
+    }
+
+    const findNodes = myDiagram.findNodesByExample(nodeData);
+    if (Object.keys(nodeData).length !== 0) {
+        findNodes.each(node => {
+            node.findObject("SHAPE").stroke = "Gold";
+            node.findObject("SHAPE").fill = "#5CE1E6";
+        });
+
+    }
+}
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+//Not in use
 function addEmployee(node,) {
     if (!node) return;
     const thisemp = node.data;
     myDiagram.startTransaction("add employee");
     const newemp = {
         parent: thisemp.key,
-        nome: "Placeholder", 
+        nome: "Placeholder",
         alcunha: "Placeholder",
         instrumento: "Placeholder",
         estagio: "Placeholder",
@@ -196,6 +290,7 @@ function addEmployee(node,) {
     myDiagram.commandHandler.scrollToPart(newnode);
 }
 
+//Not in use
 function deleteAll() {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
@@ -230,6 +325,9 @@ function saveNodeToDB(node) {
         .catch(error => console.log('error', error));
 
     myDiagram.updateAllTargetBindings()
+
+    loadTree(true);
+
 }
 
 
@@ -237,28 +335,31 @@ function showNodeDetails(e, node) {
     clearSibeBarContent()
     showSideBarPanel()
     addAlcunhaToSideBar(node.data.alcunha)
-    addFieldsToSideBarDropdown()
+    addFieldsToSideBarDropdown(node)
     showAllNodeDetailOnSideBar(node)
     showTunanteImage(node.data.key)
     const save = document.getElementById('save')
-    save.onclick = function(){saveNodeToDB(node)}
+    save.onclick = function () { saveNodeToDB(node) }
+
+    const add = document.getElementById("add-button")
+    add.onclick = function () { addSelectedFieldToSideBar(node) }
 }
 
-function showSideBarPanel(){
+function showSideBarPanel() {
     sideBar.style.cssText = 'position: absolute; top: 0; right: 0; bottom: 0; width: 300px;';
     document.getElementById('myDiagramDiv').appendChild(sideBar);
     slideIn(sideBar, 300);
 }
 
-function closeSideBar(){
+function closeSideBar() {
     slideOut(sideBar, 300)
 }
 
-function clearSibeBarContent(){
+function clearSibeBarContent() {
     content.innerHTML = "";
 }
 
-function showTunanteImage(key){
+function showTunanteImage(key) {
     const image = new Image();
     image.src = "https://moosepictures.s3.eu-central-1.amazonaws.com/" + key + ".jpg";
     image.style.display = 'none';
@@ -272,26 +373,34 @@ function showTunanteImage(key){
     content.prepend(image);
 }
 
-function addAlcunhaToSideBar(alcunha){
+function addAlcunhaToSideBar(alcunha) {
     const h2 = document.createElement('h2');
     h2.textContent = alcunha;
     content.appendChild(h2);
 }
 
-function showAllNodeDetailOnSideBar(node){
-    Object.keys(node.data).forEach(key => {    
+function showAllNodeDetailOnSideBar(node) {
+    Object.keys(node.data).forEach(key => {
         if (key !== 'key' && key !== '__gohashid' && key !== 'id' && key !== 'alcunha' && key !== 'parent' && node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
             const keyText = key.charAt(0).toUpperCase() + key.slice(1);
             const valueText = node.data[key];
             if (key == 'padrinhoName' && node.data.gender == "F") {
                 p.textContent = `Padrinho: ${node.data[key]}`;
-            } 
-            else if (key == 'padrinhoName' && node.data.gender == "M") { 
+            }
+            else if (key == 'padrinhoName' && node.data.gender == "M") {
                 p.textContent = `Madrinha: ${node.data[key]}`;
-            } 
+            }
+            else if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Caloiro") {
+                p.textContent = `Hierarquia: Caloira`;
+            }
+
+            else if (key == 'estagio' && node.data.gender == "F" && node.data[key] == "Veterano") {
+                p.textContent = `Hierarquia: Veterana`;
+            }
             else {
-                p.textContent = `${keyText}: `;
+                const tag = sideBarValues.get(key);
+                p.textContent = `${tag}: `;
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.placeholder = 'Value';
@@ -306,18 +415,27 @@ function showAllNodeDetailOnSideBar(node){
     });
 }
 
-function addFieldsToSideBarDropdown(){
-    dropdown.innerHTML = `
-        <option value="">Novo Campo</option>
-        <option value="localTuno">Local Tuno</option>
-        <option value="localSaida">Local Cota</option>
-        <option value="dataTuno">Data Tuno</option>
-        <option value="dataCota">Data Cota</option>
-    `;
+function addFieldsToSideBarDropdown(node) {
+
+    dropdown.innerHTML = "";
+
+    const existingValues = new Set(Object.keys(node.data).filter(key => node.data[key] !== null && node.data[key] !== ""));
+    for (const [value, text] of sideBarValues) {
+        if (!existingValues.has(value) && ((node.data[value] === "" || node.data[value] === null))) {
+            const option = document.createElement("option");
+            option.value = value;
+            option.text = text;
+            dropdown.appendChild(option);
+            existingValues.add(value);
+        }
+    }
 }
 
-function addSelectedFieldToSideBar() {
-    const selectedKey = dropdown.value;
+function addSelectedFieldToSideBar(node) {
+
+    const selectedOption = dropdown.options[dropdown.selectedIndex];
+    const selectedKey = selectedOption.text;
+    const selectedValue = selectedOption.value;
     if (selectedKey) {
         const p = document.createElement('p');
         const keyText = selectedKey.charAt(0).toUpperCase() + selectedKey.slice(1);
@@ -327,10 +445,11 @@ function addSelectedFieldToSideBar() {
         input.placeholder = 'Value';
         input.value = '';
         input.addEventListener('input', () => {
-            node.data[selectedKey] = input.value;
+            node.data[selectedValue] = input.value;
         });
         p.appendChild(input);
         content.appendChild(p);
+        dropdown.removeChild(selectedOption);
     }
 };
 
