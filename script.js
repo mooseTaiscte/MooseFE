@@ -379,7 +379,7 @@ function addAlcunhaToSideBar(alcunha) {
 
 function showAllNodeDetailOnSideBar(node) {
     Object.keys(node.data).forEach(key => {
-        if (key !== 'key' && key !== '__gohashid' && key !== 'id' && key !== 'alcunha' && key !== 'parent' && node.data[key] && node.data[key].length !== 0) {
+        if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
             p.textContent = `${tag}: `;
@@ -394,12 +394,12 @@ function showAllNodeDetailOnSideBar(node) {
             else if (key == 'padrinhoName' && node.data.gender == "M") {
                 p.textContent = `Madrinha: ${node.data[key]}`;
             }
-            else if(key == 'estagio' && node.data.gender == "F"){
-                if(node.data[key] == "Caloiro"){
-                    input.value="Caloira"
+            else if (key == 'estagio' && node.data.gender == "F") {
+                if (node.data[key] == "Caloiro") {
+                    input.value = "Caloira"
                 }
-                if(node.data[key] == "Veterano"){
-                    input.value="Veterana"
+                if (node.data[key] == "Veterano") {
+                    input.value = "Veterana"
                 }
                 input.addEventListener('input', () => {
                     node.data[key] = input.value;
@@ -411,7 +411,6 @@ function showAllNodeDetailOnSideBar(node) {
                 input.addEventListener('input', () => {
                     node.data[key] = input.value;
                 });
-                
                 p.appendChild(input);
             }
             content.appendChild(p);
