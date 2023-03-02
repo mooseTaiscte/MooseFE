@@ -335,16 +335,15 @@ function showNodeDetails(e, node) {
     showSideBarPanel()
     addAlcunhaToSideBar(node.data.alcunha)
     addFieldsToSideBarDropdown(node)
-    console.log(editable)
     if (editable){
         showAllNodeDetailOnSideBarEditable(node)
     } else {
         showAllNodeDetailOnSideBar(node)
     }
     showTunanteImage(node.data.key)
+    showTunanteImage(node)
     const save = document.getElementById('save')
     save.onclick = function () { saveNodeToDB(node) }
-
     const add = document.getElementById("add-button")
     add.onclick = function () { addSelectedFieldToSideBar(node) }
 }
@@ -363,19 +362,66 @@ function clearSibeBarContent() {
     content.innerHTML = "";
 }
 
-function showTunanteImage(key) {
-    const image = new Image();
-    image.src = "https://moosepictures.s3.eu-central-1.amazonaws.com/" + key + ".jpg";
-    image.style.display = 'none';
-    image.onload = function () {
+function showTunanteImage(node) {
+    const existingImage = document.querySelector(`img[data-key="${node.data.key}"]`);
+    if (existingImage) {
+      existingImage.src = `https://moosepictures.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
+    } else {
+      const image = new Image();
+      image.src = `https://moosepictures.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
+      image.style.display = 'none';
+      image.onload = function() {
         image.style.display = 'block';
         image.style.margin = '0 auto';
+      };
+      image.style.display = 'block';
+      image.style.margin = '0 auto';
+      image.style.width = '200px';
+      image.setAttribute('data-key', node.data.key);
+      image.addEventListener('click', function() {
+        uploadImage(image,node);
+      });
+      content.prepend(image);
+    }
+  }
+  
+
+function uploadImage(image,node) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = function (event) {
+      const file = event.target.files[0];
+      AWS.config.update({
+        region: 'eu-central-1',
+        credentials: new AWS.Credentials({
+          accessKeyId: 'AKIAQ3WTHPSDIFYKMLXH',
+          secretAccessKey: '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'
+        })
+      });
+      const s3 = new AWS.S3();
+
+      const params = {
+        Bucket: 'moosepictures',
+        Key: node.data.key+".jpg",
+        ContentType: ".jpg",
+        Body: file,
+        ACL: 'public-read',
+      };
+      s3.upload(params, function (err, data) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.log(`File uploaded successfully. File location: ${data.Location}`);
+        showTunanteImage(node);
+        node.findObject("Picture").source=`https://moosepictures.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
+
+      });
     };
-    image.style.display = 'block';
-    image.style.margin = '0 auto';
-    image.style.width = '200px';
-    content.prepend(image);
-}
+    image.removeEventListener('click', uploadImage);
+    input.click();
+  }
 
 function addAlcunhaToSideBar(alcunha) {
     const h2 = document.createElement('h2');
