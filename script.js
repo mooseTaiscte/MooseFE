@@ -1,5 +1,6 @@
 var $ = null
 var myDiagram = null
+var editable = false
 const sideBar = document.getElementById('sidebar');
 const addButton = document.getElementById('add-button');
 const content = document.getElementById('sidebar-content');
@@ -334,7 +335,12 @@ function showNodeDetails(e, node) {
     showSideBarPanel()
     addAlcunhaToSideBar(node.data.alcunha)
     addFieldsToSideBarDropdown(node)
-    showAllNodeDetailOnSideBar(node)
+    if (editable){
+        showAllNodeDetailOnSideBarEditable(node)
+    } else {
+        showAllNodeDetailOnSideBar(node)
+    }
+    showTunanteImage(node.data.key)
     showTunanteImage(node)
     const save = document.getElementById('save')
     save.onclick = function () { saveNodeToDB(node) }
@@ -424,6 +430,24 @@ function addAlcunhaToSideBar(alcunha) {
 }
 
 function showAllNodeDetailOnSideBar(node) {
+    Object.keys(node.data).forEach(key => {
+        if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0) {
+            const p = document.createElement('p');
+            if (key == 'padrinhoName' && node.data.gender == "F") {
+                p.textContent = `Padrinho: ${node.data[key]}`;
+            }
+            else if (key == 'padrinhoName' && node.data.gender == "M") {
+                p.textContent = `Madrinha: ${node.data[key]}`;
+            }
+            else {
+                p.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${node.data[key]}`;
+            }
+            content.appendChild(p);
+        }
+    });
+}
+
+function showAllNodeDetailOnSideBarEditable(node) {
     Object.keys(node.data).forEach(key => {
         if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
@@ -519,3 +543,17 @@ function slideOut(element, duration) {
     }, duration);
 }
 
+function loginEditMode() {
+    let pass = prompt("Qual é a password chavalo?", "");
+    if (checkPassword(pass)){
+        enableEditMode()
+    }
+}
+
+function checkPassword(pass){
+    return true
+}
+
+function enableEditMode(){
+    editable = true
+}
