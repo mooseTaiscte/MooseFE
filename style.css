@@ -9,6 +9,14 @@ html, body{
     background-color: #DAE4E4;
 }
 
+#logo{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 10%;
+}
+
 #save{
   position: relative;
   top: 5%;
@@ -35,9 +43,9 @@ html, body{
 #top-bar {
   position: fixed;
   top: 0;
-  left: 0;
+  left: 10%;
   right: 0;
-  height: 50px;
+  height: 64px;
   background-color: white;
   display: flex;
   align-items: center;
