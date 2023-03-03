@@ -449,8 +449,8 @@ function uploadImage(image,node) {
       AWS.config.update({
         region: 'eu-central-1',
         credentials: new AWS.Credentials({
-          accessKeyId: 'AKIAQ3WTHPSDIFYKMLXH',
-          secretAccessKey: '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'
+          accessKeyId: '-',
+          secretAccessKey: '-/-'
         })
       });
       const s3 = new AWS.S3();
@@ -462,16 +462,7 @@ function uploadImage(image,node) {
         Body: file,
         ACL: 'public-read',
       };
-      s3.upload(params, function (err, data) {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        console.log(`File uploaded successfully. File location: ${data.Location}`);
-        showTunanteImage(node);
-        node.findObject("Picture").source=`https://moosepictures.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
-
-      });
+    
     };
     image.removeEventListener('click', uploadImage);
     input.click();
