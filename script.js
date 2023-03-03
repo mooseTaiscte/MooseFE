@@ -44,7 +44,6 @@ function init(json) {
                 click: showNodeDetails // add a click event handler to the node
             },
             $(go.Panel, "Auto",
-                { name: "BODY" },
                 $(go.Shape, "Border",
                     { name: "SHAPE", stroke: 'white', fill: "white", strokeWidth: 3.5, portId: "", width: 300 }),
                 $(go.Panel, "Horizontal",
@@ -144,11 +143,30 @@ function init(json) {
                 $(go.Shape, "PlusLine", { width: 10, height: 10 }),
                 {
                     name: "BUTTON", alignment: go.Spot.Right, opacity: 0,  // initially not visible
-                    click: (e, button) => addEmployee(button.part)
+                    click: (e, button) => addTunante(button.part),
+
+                },
+            ),
+            $("Button",
+                $(go.Shape, "MinusLine", { width: 10, height: 10 }),
+                {
+                    name: "BUTTON2", alignment: go.Spot.Left, opacity: 0,  // initially not visible
+                    click: (e, button) => removeTunante(button.part)
                 },
                 // button is visible either when node is selected or on mouse-over
-                new go.Binding("opacity", "isSelected", s => s ? 1 : 0).ofObject()
+
             ),
+            {
+                name: "BODY",
+                mouseEnter: function(e, node) {
+                    node.findObject("BUTTON").opacity = 1;
+                    node.findObject("BUTTON2").opacity = 1;
+                },
+                mouseLeave: function(e, node) {
+                    node.findObject("BUTTON").opacity = 0;
+                    node.findObject("BUTTON2").opacity = 0;
+                }
+            },
         );
 
     myDiagram.linkTemplate = new go.Link(
@@ -264,7 +282,7 @@ function capitalizeFirstLetter(string) {
 }
 
 //Not in use
-function addEmployee(node,) {
+function addTunante(node) {
     if (!node) return;
     const thisemp = node.data;
     myDiagram.startTransaction("add employee");
@@ -287,6 +305,27 @@ function addEmployee(node,) {
     if (newnode) newnode.location = node.location;
     myDiagram.commitTransaction("add employee");
     myDiagram.commandHandler.scrollToPart(newnode);
+}
+
+function removeTunante(node) {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Cookie", "JSESSIONID=D03DBBB9D09EB831EFAEF0100A758F44");
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+    };
+    
+    fetch("https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/delete?id=" + node.key, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+    myDiagram.updateAllTargetBindings()
+
+    loadTree(true);
 }
 
 //Not in use
@@ -312,10 +351,12 @@ function saveNodeToDB(node) {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Cookie", "JSESSIONID=D03DBBB9D09EB831EFAEF0100A758F44");
 
+    data = removeKeyIfNegative(node.data)
+
     var requestOptions = {
         method: 'POST',
         headers: myHeaders,
-        body: "[" + JSON.stringify(node.data) + "]",
+        body: "[" + JSON.stringify(data) + "]",
     };
 
     fetch("https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/create", requestOptions)
@@ -329,6 +370,19 @@ function saveNodeToDB(node) {
 
 }
 
+function removeKeyIfNegative(node){
+    if (node.key < 0){
+        var newData = {};
+        for (var prop in node) {
+            if (prop !== "key") {
+                newData[prop] = node[prop];
+            }
+        }
+        return newData
+    }
+    return node
+}
+
 
 function showNodeDetails(e, node) {
     clearSibeBarContent()
@@ -340,8 +394,8 @@ function showNodeDetails(e, node) {
     } else {
         showAllNodeDetailOnSideBar(node)
     }
-    showTunanteImage(node.data.key)
-    showTunanteImage(node)
+    //showTunanteImage(node.data.key)
+    //showTunanteImage(node)
     const save = document.getElementById('save')
     save.onclick = function () { saveNodeToDB(node) }
     const add = document.getElementById("add-button")
