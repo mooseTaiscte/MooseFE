@@ -21,6 +21,7 @@ const sideBarValues = new Map([
     ["nome", "Nome"],
     ["dataIngressao", "Data de Entrada"],
     ["familia", "Familia"],
+    ["alcunha", "Alcunha"],
 
 ]);
 function init(json) {
@@ -133,7 +134,7 @@ function init(json) {
                                         return "Veterana";
                                     }
                                 }
-                                return data.hierarquia;
+                                return data.estagio;
 
                             }).makeTwoWay()),
                     )
@@ -271,7 +272,7 @@ function filter() {
     const findNodes = myDiagram.findNodesByExample(nodeData);
     if (Object.keys(nodeData).length !== 0) {
         findNodes.each(node => {
-            node.findObject("SHAPE").stroke = "Gold";
+            node.findObject("SHAPE").stroke = "#006699";
             node.findObject("SHAPE").fill = "#5CE1E6";
         });
 
@@ -475,6 +476,8 @@ function addAlcunhaToSideBar(alcunha) {
 }
 
 function showAllNodeDetailOnSideBar(node) {
+    editable.hidden = true
+    save.hidden = true
     Object.keys(node.data).forEach(key => {
         if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
@@ -493,6 +496,10 @@ function showAllNodeDetailOnSideBar(node) {
 }
 
 function showAllNodeDetailOnSideBarEditable(node) {
+    editable = document.getElementById("editable-inputs")
+    editable.hidden = false
+    save.hidden = false
+    console.log(node.data)
     Object.keys(node.data).forEach(key => {
         if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
@@ -515,6 +522,9 @@ function showAllNodeDetailOnSideBarEditable(node) {
                 }
                 if (node.data[key] == "Veterano") {
                     input.value = "Veterana"
+                }
+                else {
+                    input.value = node.data[key]
                 }
                 input.addEventListener('input', () => {
                     node.data[key] = input.value;
