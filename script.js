@@ -282,7 +282,6 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-//Not in use
 function addTunante(node) {
     if (!node) return;
     const thisemp = node.data;
@@ -602,6 +601,7 @@ function loginEditMode() {
     let pass = prompt("Qual é a password chavalo?", "");
     if (checkPassword(pass)){
         enableEditMode()
+        closeSideBar()
     }
 }
 
