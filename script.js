@@ -181,7 +181,7 @@ function init(json) {
 }
 
 let myHeaders = new Headers();
-let url = 'https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/getAll';
+let url = 'https://www.moose.eu-central-1.elasticbeanstalk.com/getAll';
 myHeaders.append("Authorization", "Basic bW9vc2U6bW9vc2UxOTkw");
 var requestOptions = {
     method: 'GET',
@@ -319,7 +319,7 @@ function removeTunante(node) {
         headers: myHeaders,
     };
     
-    fetch("https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/delete?id=" + node.key, requestOptions)
+    fetch("https://www.moose.eu-central-1.elasticbeanstalk.com/delete?id=" + node.key, requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
@@ -340,7 +340,7 @@ function deleteAll() {
         redirect: 'follow'
     };
 
-    fetch("https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/delete", requestOptions)
+    fetch("https://www.moose.eu-central-1.elasticbeanstalk.com/delete", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
@@ -360,7 +360,7 @@ function saveNodeToDB(node) {
         body: "[" + JSON.stringify(data) + "]",
     };
 
-    fetch("https://www.moosebackendv2.eu-central-1.elasticbeanstalk.com/create", requestOptions)
+    fetch("https://www.moose.eu-central-1.elasticbeanstalk.com/create", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
