@@ -59,7 +59,7 @@ function init(json) {
                         },
                         new go.Binding("source", "", function (data) {
                             if (data.hasImage) {
-                                return "https://moosepictures.s3.eu-central-1.amazonaws.com/" + data.key + ".jpg";
+                                return "https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/" + data.key + ".jpg";
                             }
                         })
 
@@ -395,7 +395,7 @@ function showNodeDetails(e, node) {
         showAllNodeDetailOnSideBar(node)
     }
     //showTunanteImage(node.data.key)
-    //showTunanteImage(node)
+    showTunanteImage(node)
     const save = document.getElementById('save')
     save.onclick = function () { saveNodeToDB(node) }
     const add = document.getElementById("add-button")
@@ -419,10 +419,10 @@ function clearSibeBarContent() {
 function showTunanteImage(node) {
     const existingImage = document.querySelector(`img[data-key="${node.data.key}"]`);
     if (existingImage) {
-      existingImage.src = `https://moosepictures.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
+      existingImage.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
     } else {
       const image = new Image();
-      image.src = `https://moosepictures.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
+      image.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
       image.style.display = 'none';
       image.onload = function() {
         image.style.display = 'block';
@@ -456,7 +456,7 @@ function uploadImage(image,node) {
       const s3 = new AWS.S3();
 
       const params = {
-        Bucket: 'moosepictures',
+        Bucket: 'moosepicturesbucket',
         Key: node.data.key+".jpg",
         ContentType: ".jpg",
         Body: file,
