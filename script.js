@@ -59,7 +59,7 @@ function init(json) {
                         },
                         new go.Binding("source", "", function (data) {
                             if (data.hasImage) {
-                                return "https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/" + data.key + ".jpg";
+                                //return "https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/" + data.key + ".jpg";
                             }
                         })
 
@@ -395,7 +395,7 @@ function showNodeDetails(e, node) {
         showAllNodeDetailOnSideBar(node)
     }
     //showTunanteImage(node.data.key)
-    showTunanteImage(node)
+    //showTunanteImage(node)
     const save = document.getElementById('save')
     save.onclick = function () { saveNodeToDB(node) }
     const add = document.getElementById("add-button")
