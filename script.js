@@ -159,11 +159,11 @@ function init(json) {
             ),
             {
                 name: "BODY",
-                mouseEnter: function(e, node) {
+                mouseEnter: function (e, node) {
                     node.findObject("BUTTON").opacity = 1;
                     node.findObject("BUTTON2").opacity = 1;
                 },
-                mouseLeave: function(e, node) {
+                mouseLeave: function (e, node) {
                     node.findObject("BUTTON").opacity = 0;
                     node.findObject("BUTTON2").opacity = 0;
                 }
@@ -317,7 +317,7 @@ function removeTunante(node) {
         method: 'POST',
         headers: myHeaders,
     };
-    
+
     fetch("https://moose.eu-central-1.elasticbeanstalk.com/delete?id=" + node.key, requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
@@ -370,8 +370,8 @@ function saveNodeToDB(node) {
 
 }
 
-function removeKeyIfNegative(node){
-    if (node.key < 0){
+function removeKeyIfNegative(node) {
+    if (node.key < 0) {
         var newData = {};
         for (var prop in node) {
             if (prop !== "key") {
@@ -389,13 +389,13 @@ function showNodeDetails(e, node) {
     showSideBarPanel()
     addAlcunhaToSideBar(node.data.alcunha)
     addFieldsToSideBarDropdown(node)
-    if (editable){
+    if (editable) {
         showAllNodeDetailOnSideBarEditable(node)
     } else {
         showAllNodeDetailOnSideBar(node)
     }
     //showTunanteImage(node.data.key)
-    //showTunanteImage(node)
+    showTunanteImage(node)
     const save = document.getElementById('save')
     save.onclick = function () { saveNodeToDB(node) }
     const add = document.getElementById("add-button")
@@ -419,54 +419,78 @@ function clearSibeBarContent() {
 function showTunanteImage(node) {
     const existingImage = document.querySelector(`img[data-key="${node.data.key}"]`);
     if (existingImage) {
-      existingImage.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
+        existingImage.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
     } else {
-      const image = new Image();
-      image.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
-      image.style.display = 'none';
-      image.onload = function() {
+        const image = new Image();
+        image.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
+        image.style.display = 'none';
+        image.onload = function () {
+            image.style.display = 'block';
+            image.style.margin = '0 auto';
+        };
         image.style.display = 'block';
         image.style.margin = '0 auto';
-      };
-      image.style.display = 'block';
-      image.style.margin = '0 auto';
-      image.style.width = '200px';
-      image.setAttribute('data-key', node.data.key);
-      image.addEventListener('click', function() {
-        uploadImage(image,node);
-      });
-      content.prepend(image);
+        image.style.width = '200px';
+        image.setAttribute('data-key', node.data.key);
+        image.addEventListener('click', function () {
+            uploadImage(image, node);
+        });
+        content.prepend(image);
     }
-  }
-  
+}
 
-function uploadImage(image,node) {
+
+function uploadImage(image, node) {
+    let accessKey, secretKey;
+    //Add the password prompt here
+    fetch("https://moose.eu-central-1.elasticbeanstalk.com/userAuthentication?password=")
+        .then(response => response.json())
+        .then(data => {
+            accessKey = data.accessKey;
+            secretKey = data.secretKey;
+            console.log(credential1); // "123"
+            console.log(credential2); // "234"
+            // Use the credentials as needed
+        })
+        .catch(error => {
+            console.error('Error fetching credentials:', error);
+        });
+
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
     input.onchange = function (event) {
-      const file = event.target.files[0];
-      AWS.config.update({
-        region: 'eu-central-1',
-        credentials: new AWS.Credentials({
-          accessKeyId: '-',
-          secretAccessKey: '-/-'
-        })
-      });
-      const s3 = new AWS.S3();
+        const file = event.target.files[0];
+        AWS.config.update({
+            region: 'eu-central-1',
+            credentials: new AWS.Credentials({
+                accessKeyId: accessKey,
+                secretAccessKey: secretKey
+            })
+        });
+        const s3 = new AWS.S3();
 
-      const params = {
-        Bucket: 'moosepicturesbucket',
-        Key: node.data.key+".jpg",
-        ContentType: ".jpg",
-        Body: file,
-        ACL: 'public-read',
-      };
-    
+        const params = {
+            Bucket: 'moosepicturesbucket',
+            Key: node.data.key + ".jpg",
+            ContentType: ".jpg",
+            Body: file,
+            ACL: 'public-read',
+        };
+        s3.upload(params, function (err, data) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`File uploaded successfully. File location: ${data.Location}`);
+            showTunanteImage(node);
+            node.findObject("Picture").source = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
+
+        });
     };
     image.removeEventListener('click', uploadImage);
     input.click();
-  }
+}
 
 function addAlcunhaToSideBar(alcunha) {
     const h2 = document.createElement('h2');
@@ -478,7 +502,7 @@ function showAllNodeDetailOnSideBar(node) {
     editable.hidden = true
     save.hidden = true
     Object.keys(node.data).forEach(key => {
-        if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0) {
+        if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
             if (key == 'padrinhoName' && node.data.gender == "F") {
                 p.textContent = `Padrinho: ${node.data[key]}`;
@@ -500,7 +524,7 @@ function showAllNodeDetailOnSideBarEditable(node) {
     save.hidden = false
     console.log(node.data)
     Object.keys(node.data).forEach(key => {
-        if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0) {
+        if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
             p.textContent = `${tag}: `;
@@ -599,16 +623,16 @@ function slideOut(element, duration) {
 
 function loginEditMode() {
     let pass = prompt("Qual é a password chavalo?", "");
-    if (checkPassword(pass)){
+    if (checkPassword(pass)) {
         enableEditMode()
         closeSideBar()
     }
 }
 
-function checkPassword(pass){
+function checkPassword(pass) {
     return true
 }
 
-function enableEditMode(){
+function enableEditMode() {
     editable = true
 }
