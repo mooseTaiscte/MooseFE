@@ -480,6 +480,7 @@ function showAllNodeDetailOnSideBar(node) {
     Object.keys(node.data).forEach(key => {
         if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
+            const tag = sideBarValues.get(key);
             if (key == 'padrinhoName' && node.data.gender == "F") {
                 p.textContent = `Padrinho: ${node.data[key]}`;
             }
@@ -487,7 +488,7 @@ function showAllNodeDetailOnSideBar(node) {
                 p.textContent = `Madrinha: ${node.data[key]}`;
             }
             else {
-                p.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${node.data[key]}`;
+                p.textContent = `${tag}: ${node.data[key]}`;
             }
             content.appendChild(p);
         }
