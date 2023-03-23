@@ -59,13 +59,26 @@ html, body{
   z-index: 10;
 }
 
-#top-bar input[type="text"] {
-  border: 2px solid #006699;
-  border-radius: 20px;
-  padding: 5px 5px;
-  margin: 5px;
-  font-size: 16px;
-  outline: none;
+/* Style the select element */
+select {
+  width: 200px; /* set the width to your desired size */
+  height: 40px; /* set the height to your desired size */
+  border-radius: 20px; /* set the border radius to half the height for a more round shape */
+  background-color: white; /* set the background color to white */
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* add a subtle box shadow */
+  appearance: none; /* remove the default appearance to allow custom styling */
+  padding: 4px; /* add some padding to the text inside the select element */
+  font-size: 16px; /* set the font size to your desired size */
+  color: black; /* set the text color to black */
+  text-align: center;
+  margin: 10px;
+}
+
+/* Style the dropdown options */
+option {
+  font-size: 16px; /* set the font size to your desired size */
+  font-weight: bold; /* set the font weight to bold */
+  color: black; /* set the text color to black */
 }
 
 #filtrar {
