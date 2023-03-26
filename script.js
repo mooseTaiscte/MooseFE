@@ -228,7 +228,6 @@ function populateTopBarValues(selectId, propertyName,valuesList) {
       // Add the default option to the select element
       const defaultOption = document.createElement('option');
       defaultOption.text = propertyName[0].toUpperCase() + propertyName.slice(1); // capitalize the first letter of the property name
-      defaultOption.disabled = true;
       defaultOption.selected = true;
       select.add(defaultOption);
 
