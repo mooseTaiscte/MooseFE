@@ -11,12 +11,7 @@ html, body{
     background-color: #DAE4E4;
 }
 
-#logo{
-  top: 0;
-  padding-right: 1%;
-  z-index: 10;
-  max-height: 100%;
-}
+
 
 #save{
   position: relative;
@@ -48,24 +43,41 @@ html, body{
 }
 
 #top-bar {
-  position: fixed;
-  top: 0;
-  height: 64px;
-  width: 100%;
-  background-color: white;
   display: flex;
-  align-items: center;
-  padding: 15px 0px;
-  z-index: 10;
+  align-items: center; /* align items vertically */
+  justify-content: flex-start; /* align items horizontally */
+  flex-wrap: wrap; /* allow elements to wrap to next line if needed */
 }
 
-#top-bar input[type="text"] {
-  border: 2px solid #006699;
-  border-radius: 20px;
-  padding: 5px 5px;
-  margin: 5px;
-  font-size: 16px;
-  outline: none;
+#top-bar > * {
+  flex-basis: 10%; /* set the width of each element to be 20% of the parent container */
+  padding: 10px; /* add some padding between elements */
+}
+
+#logo{
+  max-width: 100px;
+}
+
+/* Style the select element */
+#top-bar > select {
+  border-radius: 30px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #006699; /* set the border radius to half the height for a more round shape */
+  appearance: none; /* remove the default appearance to allow custom styling */
+  font-size: 16px; /* set the font size to your desired size */
+  margin: 10px;
+  padding: 6px 30px;
+  background-image: url("dropdown.svg");
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+
+/* Style the dropdown options */
+option {
+  font-size: 16px; /* set the font size to your desired size */
+  color: black; /* set the text color to black */
 }
 
 #filtrar {

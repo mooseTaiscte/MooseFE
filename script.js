@@ -24,6 +24,12 @@ const sideBarValues = new Map([
     ["alcunha", "Alcunha"],
 
 ]);
+const instrumentoList = new Set();
+const naipeList = new Set();
+const hierarquiaList = new Set();
+const familiaList = new Set();
+const cursoList = new Set();
+
 function init(json) {
     $ = go.GraphObject.make;
     myDiagram =
@@ -178,6 +184,14 @@ function init(json) {
         .add(new go.Shape({ strokeWidth: 3, stroke: "#555" }))
     setNodeBorderByFamilia()
 
+    //Populate list
+    createDropdownValues(instrumentoList,'instrumento');
+    createDropdownValues(familiaList,'familia');
+    createDropdownValues(hierarquiaList,'estagio');
+    createDropdownValues(naipeList,'naipe');
+    createDropdownValues(cursoList,'curso');
+    //Create Top bar Values
+    createTopBarValues();
 }
 
 let myHeaders = new Headers();
@@ -188,6 +202,44 @@ var requestOptions = {
     headers: myHeaders,
     redirect: 'follow'
 };
+
+function createTopBarValues() {
+    populateTopBarValues('instrumento-input', 'instrumento',instrumentoList);
+    populateTopBarValues('familia-input', 'familia',familiaList);
+    populateTopBarValues('hierarquia-input', 'estagio',hierarquiaList);
+    populateTopBarValues('naipe-input', 'naipe',naipeList);
+    populateTopBarValues('curso-input', 'curso',cursoList);
+
+}
+function createDropdownValues(listToPopulate, propertyName) {
+
+    // Loop through the nodes and add their property values to the Set
+    myDiagram.nodes.each(function (node) {
+        if (node.data[propertyName] != null) {
+            listToPopulate.add(node.data[propertyName]);
+        }
+    });
+}
+
+function populateTopBarValues(selectId, propertyName,valuesList) {
+    // Get the select element
+    const select = document.getElementById(selectId);
+
+      // Add the default option to the select element
+      const defaultOption = document.createElement('option');
+      defaultOption.text = propertyName[0].toUpperCase() + propertyName.slice(1); // capitalize the first letter of the property name
+      defaultOption.selected = true;
+      select.add(defaultOption);
+
+    // Create the dropdown options based on the values in the Set
+    valuesList.forEach(value => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.text = value;
+            select.add(option);
+        
+    });
+}
 
 function loadTree(forceLoad) {
 
@@ -253,19 +305,19 @@ function filter() {
 
 
     let nodeData = {};
-    if (instrumento !== "") {
+    if (instrumento !== "" && instrumento !== "Instrumento") {
         nodeData.instrumento = capitalizeFirstLetter(instrumento);
     }
-    if (familia !== "") {
+    if (familia !== "" && familia !== "Familia") {
         nodeData.familia = capitalizeFirstLetter(familia);
     }
-    if (naipe !== "") {
+    if (naipe !== "" && naipe !== "Naipe") {
         nodeData.naipe = capitalizeFirstLetter(naipe);
     }
-    if (curso !== "") {
+    if (curso !== "" && curso !== "Curso") {
         nodeData.curso = capitalizeFirstLetter(curso);
     }
-    if (hierarquia !== "") {
+    if (hierarquia !== "" && hierarquia !== "Estagio") {
         nodeData.estagio = capitalizeFirstLetter(hierarquia);
     }
 
