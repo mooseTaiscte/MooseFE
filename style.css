@@ -52,6 +52,7 @@ html, body{
 #top-bar > * {
   flex-basis: 10%; /* set the width of each element to be 20% of the parent container */
   padding: 10px; /* add some padding between elements */
+  margin-bottom: 10px;
 }
 
 #logo{
@@ -71,6 +72,7 @@ html, body{
   background-image: url("dropdown.svg");
   background-repeat: no-repeat;
   background-position: right center;
+  max-width: 200px;
 }
 
 
