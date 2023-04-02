@@ -15,7 +15,7 @@ const sideBarValues = new Map([
     ["instrumento", "Instrumento"],
     ["curso", "Curso"],
     ["gender", "Género"],
-    ["estagio", "Hierarquia"],
+    ["hierarquia", "Hierarquia"],
     ["naipe", "Naipe"],
     ["padrinhoName", "Padrinho"],
     ["nome", "Nome"],
@@ -133,14 +133,14 @@ function init(json) {
                             },
                             new go.Binding("text", "", function (data) {
                                 if (data.gender == "F") {
-                                    if (data.estagio == "Caloiro") {
+                                    if (data.hierarquia == "Caloiro") {
                                         return "Caloira";
                                     }
-                                    if (data.estagio == "Veterano") {
+                                    if (data.hierarquia == "Veterano") {
                                         return "Veterana";
                                     }
                                 }
-                                return data.estagio;
+                                return data.hierarquia;
 
                             }).makeTwoWay()),
                     )
@@ -187,7 +187,7 @@ function init(json) {
     //Populate list
     createDropdownValues(instrumentoList,'instrumento');
     createDropdownValues(familiaList,'familia');
-    createDropdownValues(hierarquiaList,'estagio');
+    createDropdownValues(hierarquiaList,'hierarquia');
     createDropdownValues(naipeList,'naipe');
     createDropdownValues(cursoList,'curso');
     //Create Top bar Values
@@ -206,7 +206,7 @@ var requestOptions = {
 function createTopBarValues() {
     populateTopBarValues('instrumento-input', 'instrumento',instrumentoList);
     populateTopBarValues('familia-input', 'familia',familiaList);
-    populateTopBarValues('hierarquia-input', 'estagio',hierarquiaList);
+    populateTopBarValues('hierarquia-input', 'hierarquia',hierarquiaList);
     populateTopBarValues('naipe-input', 'naipe',naipeList);
     populateTopBarValues('curso-input', 'curso',cursoList);
 
@@ -317,8 +317,8 @@ function filter() {
     if (curso !== "" && curso !== "Curso") {
         nodeData.curso = capitalizeFirstLetter(curso);
     }
-    if (hierarquia !== "" && hierarquia !== "Estagio") {
-        nodeData.estagio = capitalizeFirstLetter(hierarquia);
+    if (hierarquia !== "" && hierarquia !== "hierarquia") {
+        nodeData.hierarquia = capitalizeFirstLetter(hierarquia);
     }
 
     const findNodes = myDiagram.findNodesByExample(nodeData);
@@ -343,7 +343,7 @@ function addTunante(node) {
         nome: "Placeholder",
         alcunha: "Placeholder",
         instrumento: "Placeholder",
-        estagio: "Placeholder",
+        hierarquia: "Placeholder",
         naipe: "Placeholder",
         curso: "Placeholder",
         localCaloiro: "Placeholder",
@@ -568,7 +568,7 @@ function showAllNodeDetailOnSideBarEditable(node) {
             else if (key == 'padrinhoName' && node.data.gender == "M") {
                 p.textContent = `Madrinha: ${node.data[key]}`;
             }
-            else if (key == 'estagio' && node.data.gender == "F") {
+            else if (key == 'hierarquia' && node.data.gender == "F") {
                 if (node.data[key] == "Caloiro") {
                     input.value = "Caloira"
                 }
