@@ -317,7 +317,7 @@ function filter() {
     if (curso !== "" && curso !== "Curso") {
         nodeData.curso = capitalizeFirstLetter(curso);
     }
-    if (hierarquia !== "" && hierarquia !== "hierarquia") {
+    if (hierarquia !== "" && hierarquia !== "Hierarquia") {
         nodeData.hierarquia = capitalizeFirstLetter(hierarquia);
     }
 
