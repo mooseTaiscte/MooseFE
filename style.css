@@ -1,7 +1,15 @@
+@font-face {
+    font-family: "TaiscteFont";
+    src: url("MorganSansRegular.otf");
+}
+
+* {
+    font-family: "TaiscteFont", Sans-serif;
+}
+
 html, body{
     width: 100%;
     height: 100%;
-    font-family: "MorganSnCaps", Sans-serif;
     overflow: hidden;
 }
 
@@ -78,16 +86,17 @@ html, body{
 
 /* Style the dropdown options */
 option {
+  font-family: "TaiscteFont", Sans-serif;
   font-size: 16px; /* set the font size to your desired size */
   color: black; /* set the text color to black */
 }
 
 #filtrar {
-  margin-left: 5px;
   background-color: #006699;
   color: #fff;
   border-radius: 30px;
   border: none;
+  margin: 10px;
   padding: 6px 30px;
   font-size: 16px;
 }
