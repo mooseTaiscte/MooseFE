@@ -411,15 +411,12 @@ function saveNodeToDB(node) {
         body: "[" + JSON.stringify(data) + "]",
     };
 
-    fetch("https://moose.eu-central-1.elasticbeanstalk.com/create", requestOptions)
+    fetch("https://moose.eu-central-1.elasticbeanstalk.com/save", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
 
     myDiagram.updateAllTargetBindings()
-
-    loadTree(true);
-
 }
 
 function removeKeyIfNegative(node){
