@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <div id="top-bar">
-        <img id="logo" src="TAISCTE.jpg" onclick="loginEditMode()">
+        <img id="logo" src="TAISCTE.jpg" onclick="showPrompt()">
         <select id="instrumento-input"></select>
         <select id="familia-input"></select>
         <select id="naipe-input"></select>
@@ -22,6 +22,17 @@
     </div>
 </head>
 <body>
+    <div class="overlay" style="display: none;"></div>
+    <div class="prompt" style="display: none;">
+      <span class="close" onclick="hidePrompt()">x</span>
+      <form onsubmit="loginHandler(); return false;">
+        <label for="usernameInput">Username:</label>
+        <input type="text" id="usernameInput" name="usernameInput" autocomplete="off">
+        <label for="passwordInput">Password:</label>
+        <input type="password" id="passwordInput" name="passwordInput" autocomplete="off">
+        <button type="submit">Log In</button>
+      </form>
+    </div>
     <button id="refresh" onclick="loadTree(true)"><img src="refresh.svg"width="24" height="24"> </button>
     <div id="myDiagramDiv"></div>
     <div id="sidebar">

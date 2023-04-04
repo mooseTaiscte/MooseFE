@@ -647,15 +647,45 @@ function slideOut(element, duration) {
     }, duration);
 }
 
-function loginEditMode() {
-    let pass = prompt("Qual é a password chavalo?", "");
-    if (checkPassword(pass)){
+function loginHandler() {
+    let username = document.getElementById("usernameInput").value;
+    let password = document.getElementById("passwordInput").value;
+
+    if (username == "moose" && credentialsEditor(username, password)){
+        console.log(username = "moose")
         enableEditMode()
         closeSideBar()
-    }
+    } 
+
+    hidePrompt()
 }
 
-function checkPassword(pass){
+function showPrompt() {
+    var overlay = document.querySelector('.overlay');
+    var prompt = document.querySelector('.prompt');
+    overlay.style.display = 'block';
+    prompt.style.display = 'block';
+  }
+  
+  function hidePrompt() {
+    var overlay = document.querySelector('.overlay');
+    var prompt = document.querySelector('.prompt');
+    overlay.style.display = 'none';
+    prompt.style.display = 'none';
+  }
+
+function credentialsEditor(username, password){
+    console.log(username)
+    let getS3Credentials = `https://moose.eu-central-1.elasticbeanstalk.com/getS3Credentials?password=${password}&userName=${username}`;
+    console.log(getS3Credentials)
+
+    let requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch(getS3Credentials, requestOptions)
     return true
 }
 
