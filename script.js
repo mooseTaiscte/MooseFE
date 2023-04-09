@@ -185,13 +185,24 @@ function init(json) {
     setNodeBorderByFamilia()
 
     //Populate list
-    createDropdownValues(instrumentoList,'instrumento');
-    createDropdownValues(familiaList,'familia');
-    createDropdownValues(hierarquiaList,'hierarquia');
-    createDropdownValues(naipeList,'naipe');
-    createDropdownValues(cursoList,'curso');
+    createDropdownValues(instrumentoList, 'instrumento');
+    createDropdownValues(familiaList, 'familia');
+    createDropdownValues(hierarquiaList, 'hierarquia');
+    createDropdownValues(naipeList, 'naipe');
+    createDropdownValues(cursoList, 'curso');
     //Create Top bar Values
     createTopBarValues();
+
+    myDiagram.addDiagramListener("InitialLayoutCompleted", function () {
+        var node = myDiagram.findNodeForKey(99);
+
+        myDiagram.centerRect(node.actualBounds);
+
+        myDiagram.scale = 0.3;
+    });
+
+
+
 }
 
 let myHeaders = new Headers();
