@@ -362,6 +362,7 @@ function filter() {
             node.findObject("SHAPE").fill = "#5CE1E6";
             if (findNodes.count == 1) {
                 myDiagram.centerRect(node.actualBounds);
+                myDiagram.scale = 1;
             }
         });
     }
