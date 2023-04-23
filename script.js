@@ -1,6 +1,9 @@
 var $ = null
 var myDiagram = null
+var sensitiveContent = false
 var editable = false
+var accessKey = ""
+var secretKey = ""
 const sideBar = document.getElementById('sidebar');
 const addButton = document.getElementById('add-button');
 const content = document.getElementById('sidebar-content');
@@ -443,8 +446,9 @@ function showNodeDetails(e, node) {
     } else {
         showAllNodeDetailOnSideBar(node)
     }
-    //showTunanteImage(node.data.key)
-    //showTunanteImage(node)
+    if (sensitiveContent){
+        showTunanteImage(node)
+    }
     const save = document.getElementById('save')
     save.onclick = function () { saveNodeToDB(node) }
     const add = document.getElementById("add-button")
@@ -481,9 +485,11 @@ function showTunanteImage(node) {
       image.style.margin = '0 auto';
       image.style.width = '200px';
       image.setAttribute('data-key', node.data.key);
-      image.addEventListener('click', function() {
-        uploadImage(image,node);
-      });
+      if (editable){
+        image.addEventListener('click', function() {
+            uploadImage(image,node);
+          });
+      }
       content.prepend(image);
     }
   }
@@ -498,8 +504,8 @@ function uploadImage(image,node) {
       AWS.config.update({
         region: 'eu-central-1',
         credentials: new AWS.Credentials({
-          accessKeyId: '-',
-          secretAccessKey: '-/-'
+          accessKeyId: accessKey,
+          secretAccessKey: secretKey
         })
       });
       const s3 = new AWS.S3();
@@ -511,7 +517,17 @@ function uploadImage(image,node) {
         Body: file,
         ACL: 'public-read',
       };
-    
+
+      s3.upload(params, function (err, data) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.log(`File uploaded successfully. File location: ${data.Location}`);
+        showTunanteImage(node);
+        node.findObject("Picture").source=`https://moosepictures.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
+
+      });
     };
     image.removeEventListener('click', uploadImage);
     input.click();
@@ -651,11 +667,15 @@ function loginHandler() {
     let username = document.getElementById("usernameInput").value;
     let password = document.getElementById("passwordInput").value;
 
-    if (username == "moose" && credentialsEditor(username, password)){
-        console.log(username = "moose")
+    if (username == "moose" && validateCredentialsForBucket(username, password)){
+        enableSensitiveMode()
         enableEditMode()
         closeSideBar()
-    } 
+    } else if (username == "taiscte" && validateCredentialsForBucket(username, password)){
+        enableSensitiveMode()
+        closeSideBar()
+    }
+
 
     hidePrompt()
 }
@@ -674,10 +694,8 @@ function showPrompt() {
     prompt.style.display = 'none';
   }
 
-function credentialsEditor(username, password){
-    console.log(username)
+async function validateCredentialsForBucket(username, password){
     let getS3Credentials = `https://moose.eu-central-1.elasticbeanstalk.com/getS3Credentials?password=${password}&userName=${username}`;
-    console.log(getS3Credentials)
 
     let requestOptions = {
         method: 'GET',
@@ -685,10 +703,24 @@ function credentialsEditor(username, password){
         redirect: 'follow'
     };
 
-    fetch(getS3Credentials, requestOptions)
-    return true
+    const response = await fetch(getS3Credentials, requestOptions)
+    const data = await response.json();
+
+    if (response.status == 200){
+        accessKey = data.accessKey
+        secretKey = data.secretKey
+        return true
+    } else {
+        return false
+    }
+
+    
 }
 
 function enableEditMode(){
     editable = true
+}
+
+function enableSensitiveMode(){
+    sensitiveContent = true
 }
