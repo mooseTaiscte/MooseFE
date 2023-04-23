@@ -185,13 +185,24 @@ function init(json) {
     setNodeBorderByFamilia()
 
     //Populate list
-    createDropdownValues(instrumentoList,'instrumento');
-    createDropdownValues(familiaList,'familia');
-    createDropdownValues(hierarquiaList,'hierarquia');
-    createDropdownValues(naipeList,'naipe');
-    createDropdownValues(cursoList,'curso');
+    createDropdownValues(instrumentoList, 'instrumento');
+    createDropdownValues(familiaList, 'familia');
+    createDropdownValues(hierarquiaList, 'hierarquia');
+    createDropdownValues(naipeList, 'naipe');
+    createDropdownValues(cursoList, 'curso');
     //Create Top bar Values
     createTopBarValues();
+
+    myDiagram.addDiagramListener("InitialLayoutCompleted", function () {
+        var node = myDiagram.findNodeForKey(99);
+
+        myDiagram.centerRect(node.actualBounds);
+
+        myDiagram.scale = 0.3;
+    });
+
+
+
 }
 
 let myHeaders = new Headers();
@@ -204,11 +215,14 @@ var requestOptions = {
 };
 
 function createTopBarValues() {
-    populateTopBarValues('instrumento-input', 'instrumento',instrumentoList);
-    populateTopBarValues('familia-input', 'familia',familiaList);
-    populateTopBarValues('hierarquia-input', 'hierarquia',hierarquiaList);
-    populateTopBarValues('naipe-input', 'naipe',naipeList);
-    populateTopBarValues('curso-input', 'curso',cursoList);
+    
+    selectElement = document.getElementById("alcunha-input").value = '';;
+
+    populateTopBarValues('instrumento-input', 'instrumento', instrumentoList);
+    populateTopBarValues('familia-input', 'familia', familiaList);
+    populateTopBarValues('hierarquia-input', 'hierarquia', hierarquiaList);
+    populateTopBarValues('naipe-input', 'naipe', naipeList);
+    populateTopBarValues('curso-input', 'curso', cursoList);
 
 }
 function createDropdownValues(listToPopulate, propertyName) {
@@ -302,7 +316,7 @@ function filter() {
     const naipe = document.getElementById('naipe-input').value;
     const curso = document.getElementById('curso-input').value;
     const hierarquia = document.getElementById('hierarquia-input').value;
-
+    var alcunha = document.getElementById('alcunha-input').value;
 
     let nodeData = {};
     if (instrumento !== "" && instrumento !== "Instrumento") {
@@ -321,15 +335,44 @@ function filter() {
         nodeData.hierarquia = capitalizeFirstLetter(hierarquia);
     }
 
-    const findNodes = myDiagram.findNodesByExample(nodeData);
+    //if the alcunha field is filled, and that alcunha belongs to someone add it to the search in its normalized form
+    if (alcunha !== "" && alcunha !== "Alcunha") {
+        var found = false;
+        myDiagram.nodes.each(function (node) {
+            if (normalizeAndReplaceAccentedChars(alcunha.toLowerCase()) === normalizeAndReplaceAccentedChars(node.data.alcunha.toLowerCase())) {
+                nodeData.alcunha = capitalizeFirstLetter(node.data.alcunha);
+                found = true;
+            }
+        });
+        if (!found) {
+            var warning = document.createElement('div');
+            warning.textContent = "Não existe ninguém com essa alcunha";
+            document.getElementById('warnings').appendChild(warning);
+            setTimeout(function () {
+                document.getElementById('warnings').removeChild(warning);
+            }, 2000);
+        }
+    }
+
+    var findNodes = myDiagram.findNodesByExample(nodeData);
+
     if (Object.keys(nodeData).length !== 0) {
         findNodes.each(node => {
             node.findObject("SHAPE").stroke = "#006699";
             node.findObject("SHAPE").fill = "#5CE1E6";
+            if (findNodes.count == 1) {
+                myDiagram.centerRect(node.actualBounds);
+                myDiagram.scale = 1;
+            }
         });
-
     }
+
 }
+
+function normalizeAndReplaceAccentedChars(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "");
+}
+
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }

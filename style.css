@@ -68,7 +68,8 @@ html, body{
 }
 
 /* Style the select element */
-#top-bar > select {
+#top-bar > select,
+#top-bar > input[type=text] {
   border-radius: 30px;
   border-style: solid;
   border-width: 2px;
@@ -76,11 +77,23 @@ html, body{
   appearance: none; /* remove the default appearance to allow custom styling */
   font-size: 16px; /* set the font size to your desired size */
   margin: 10px;
-  padding: 6px 30px;
-  background-image: url("dropdown.svg");
+  padding: 6px 15px;
   background-repeat: no-repeat;
   background-position: right center;
   max-width: 200px;
+}
+
+#top-bar > select{
+  background-image: url("dropdown.svg");
+
+}
+
+#warnings {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  z-index: 9999;
 }
 
 
