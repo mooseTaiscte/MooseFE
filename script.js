@@ -663,15 +663,16 @@ function slideOut(element, duration) {
     }, duration);
 }
 
-function loginHandler() {
+async function loginHandler() {
     let username = document.getElementById("usernameInput").value;
     let password = document.getElementById("passwordInput").value;
 
-    if (username == "moose" && validateCredentialsForBucket(username, password)){
+    console.log(await validateCredentialsForBucket(username, password))
+    if (username == "moose" && await validateCredentialsForBucket(username, password)){
         enableSensitiveMode()
         enableEditMode()
         closeSideBar()
-    } else if (username == "taiscte" && validateCredentialsForBucket(username, password)){
+    } else if (username == "taiscte" && await validateCredentialsForBucket(username, password)){
         enableSensitiveMode()
         closeSideBar()
     }
@@ -694,27 +695,28 @@ function showPrompt() {
     prompt.style.display = 'none';
   }
 
-async function validateCredentialsForBucket(username, password){
-    let getS3Credentials = `https://moose.eu-central-1.elasticbeanstalk.com/getS3Credentials?password=${password}&userName=${username}`;
+function validateCredentialsForBucket(username, password) {
+    const getS3Credentials = `https://moose.eu-central-1.elasticbeanstalk.com/getS3Credentials?password=${password}&userName=${username}`;
 
-    let requestOptions = {
+    const requestOptions = {
         method: 'GET',
         headers: myHeaders,
         redirect: 'follow'
     };
 
-    const response = await fetch(getS3Credentials, requestOptions)
-    const data = await response.json();
-
-    if (response.status == 200){
-        accessKey = data.accessKey
-        secretKey = data.secretKey
-        return true
-    } else {
-        return false
-    }
-
-    
+    return fetch(getS3Credentials, requestOptions)
+        .then(response => {
+            if (response.status === 200) {
+                return response.json().then(data => {
+                    accessKey = data.accessKey;
+                    secretKey = data.secretKey;
+                    return true;
+                });
+            } else {
+                console.log("errou");
+                return false;
+            }
+        });
 }
 
 function enableEditMode(){
