@@ -67,8 +67,8 @@ function init(json) {
                             //go.GraphObject.Uniform also usable
                         },
                         new go.Binding("source", "", function (data) {
-                            if (data.hasImage) {
-                                //return "https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/" + data.key + ".jpg";
+                            if (data.hasImage && sensitiveContent) {
+                                return "https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/" + data.key + ".jpg";
                             }
                         })
 
@@ -671,9 +671,11 @@ async function loginHandler() {
     if (username == "moose" && await validateCredentialsForBucket(username, password)){
         enableSensitiveMode()
         enableEditMode()
+        loadTree(true)
         closeSideBar()
     } else if (username == "taiscte" && await validateCredentialsForBucket(username, password)){
         enableSensitiveMode()
+        loadTree(true)
         closeSideBar()
     }
 
