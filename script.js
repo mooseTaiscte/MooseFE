@@ -203,7 +203,7 @@ function init(json) {
 
         myDiagram.centerRect(node.actualBounds);
 
-        myDiagram.scale = 0.3;
+        myDiagram.scale = 0.5;
     });
 
 
