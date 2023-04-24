@@ -48,7 +48,8 @@ function init(json) {
                 selectionObjectName: "BODY",
                 mouseEnter: (e, node) => node.findObject("BUTTON").opacity = 1,
                 mouseLeave: (e, node) => node.findObject("BUTTON").opacity = 0,
-                click: showNodeDetails // add a click event handler to the node
+                click: showNodeDetails, // add a click event handler to the node
+                movable: false
             },
             $(go.Panel, "Auto",
                 $(go.Shape, "Border",
@@ -151,14 +152,15 @@ function init(json) {
                 {
                     name: "BUTTON", alignment: go.Spot.Right, opacity: 0,  // initially not visible
                     click: (e, button) => addTunante(button.part),
-
+                    visible: editable
                 },
             ),
             $("Button",
                 $(go.Shape, "MinusLine", { width: 10, height: 10 }),
                 {
                     name: "BUTTON2", alignment: go.Spot.Left, opacity: 0,  // initially not visible
-                    click: (e, button) => removeTunante(button.part)
+                    click: (e, button) => removeTunante(button.part),
+                    visible: editable
                 },
                 // button is visible either when node is selected or on mouse-over
 
