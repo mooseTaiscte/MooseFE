@@ -1,6 +1,9 @@
 var $ = null
 var myDiagram = null
+var sensitiveContent = false
 var editable = false
+var accessKey = ""
+var secretKey = ""
 const sideBar = document.getElementById('sidebar');
 const addButton = document.getElementById('add-button');
 const content = document.getElementById('sidebar-content');
@@ -64,8 +67,8 @@ function init(json) {
                             //go.GraphObject.Uniform also usable
                         },
                         new go.Binding("source", "", function (data) {
-                            if (data.hasImage) {
-                                //return "https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/" + data.key + ".jpg";
+                            if (data.hasImage && sensitiveContent) {
+                                return "https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/" + data.key + ".jpg";
                             }
                         })
 
@@ -486,8 +489,9 @@ function showNodeDetails(e, node) {
     } else {
         showAllNodeDetailOnSideBar(node)
     }
-    //showTunanteImage(node.data.key)
-    //showTunanteImage(node)
+    if (sensitiveContent){
+        showTunanteImage(node)
+    }
     const save = document.getElementById('save')
     save.onclick = function () { saveNodeToDB(node) }
     const add = document.getElementById("add-button")
@@ -524,9 +528,11 @@ function showTunanteImage(node) {
       image.style.margin = '0 auto';
       image.style.width = '200px';
       image.setAttribute('data-key', node.data.key);
-      image.addEventListener('click', function() {
-        uploadImage(image,node);
-      });
+      if (editable){
+        image.addEventListener('click', function() {
+            uploadImage(image,node);
+          });
+      }
       content.prepend(image);
     }
   }
@@ -541,8 +547,8 @@ function uploadImage(image,node) {
       AWS.config.update({
         region: 'eu-central-1',
         credentials: new AWS.Credentials({
-          accessKeyId: '-',
-          secretAccessKey: '-/-'
+          accessKeyId: accessKey,
+          secretAccessKey: secretKey
         })
       });
       const s3 = new AWS.S3();
@@ -554,7 +560,17 @@ function uploadImage(image,node) {
         Body: file,
         ACL: 'public-read',
       };
-    
+
+      s3.upload(params, function (err, data) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.log(`File uploaded successfully. File location: ${data.Location}`);
+        showTunanteImage(node);
+        node.findObject("Picture").source=`https://moosepictures.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
+
+      });
     };
     image.removeEventListener('click', uploadImage);
     input.click();
@@ -690,18 +706,68 @@ function slideOut(element, duration) {
     }, duration);
 }
 
-function loginEditMode() {
-    let pass = prompt("Qual é a password chavalo?", "");
-    if (checkPassword(pass)){
+async function loginHandler() {
+    let username = document.getElementById("usernameInput").value;
+    let password = document.getElementById("passwordInput").value;
+
+    console.log(await validateCredentialsForBucket(username, password))
+    if (username == "moose" && await validateCredentialsForBucket(username, password)){
+        enableSensitiveMode()
         enableEditMode()
+        loadTree(true)
+        closeSideBar()
+    } else if (username == "taiscte" && await validateCredentialsForBucket(username, password)){
+        enableSensitiveMode()
+        loadTree(true)
         closeSideBar()
     }
+
+
+    hidePrompt()
 }
 
-function checkPassword(pass){
-    return true
+function showPrompt() {
+    var overlay = document.querySelector('.overlay');
+    var prompt = document.querySelector('.prompt');
+    overlay.style.display = 'block';
+    prompt.style.display = 'block';
+  }
+  
+  function hidePrompt() {
+    var overlay = document.querySelector('.overlay');
+    var prompt = document.querySelector('.prompt');
+    overlay.style.display = 'none';
+    prompt.style.display = 'none';
+  }
+
+function validateCredentialsForBucket(username, password) {
+    const getS3Credentials = `https://moose.eu-central-1.elasticbeanstalk.com/getS3Credentials?password=${password}&userName=${username}`;
+
+    const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    return fetch(getS3Credentials, requestOptions)
+        .then(response => {
+            if (response.status === 200) {
+                return response.json().then(data => {
+                    accessKey = data.accessKey;
+                    secretKey = data.secretKey;
+                    return true;
+                });
+            } else {
+                console.log("errou");
+                return false;
+            }
+        });
 }
 
 function enableEditMode(){
     editable = true
+}
+
+function enableSensitiveMode(){
+    sensitiveContent = true
 }
