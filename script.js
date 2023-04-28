@@ -33,13 +33,27 @@ const hierarquiaList = new Set();
 const familiaList = new Set();
 const cursoList = new Set();
 
+const sidebarToggle = document.getElementById('left-sidebar-toggle');
+const closeSidebar = document.getElementById('close-left-sidebar');
+const sidebar = document.getElementById('left-sidebar');
+
+sidebarToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('show');
+});
+
+closeSidebar.addEventListener('click', () => {
+  sidebar.classList.remove('show');
+});
+
 function init(json) {
     $ = go.GraphObject.make;
     myDiagram =
         new go.Diagram("myDiagramDiv",
             { // enable Ctrl-Z to undo and Ctrl-Y to redo
+                padding: 250,
                 "undoManager.isEnabled": true,
                 layout: new go.TreeLayout({ angle: 90, layerSpacing: 35, arrangement: go.TreeLayout.ArrangementHorizontal })
+                
             });
 
     myDiagram.model = new go.TreeModel(json)
