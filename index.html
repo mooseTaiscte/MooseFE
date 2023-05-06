@@ -14,18 +14,19 @@
     <button id="left-sidebar-toggle">
         <img src="menu.svg" id="sidebar-toggle-icon" width="44" height="44">
     </button>
-    <div id="left-sidebar">
+    <div id="left-sidebar" class="show">
+        <button id="close-left-sidebar">&times;</button>
+        <img id="logo" src="TAISCTE.jpg" onclick="showPrompt()">
         <div id="top-bar">
-          <button id="close-left-sidebar">&times;</button>
-          <img id="logo" src="TAISCTE.jpg" onclick="showPrompt()">
           <select id="instrumento-input"></select>
           <select id="familia-input"></select>
           <select id="naipe-input"></select>
           <select id="hierarquia-input"></select>
           <select id="curso-input"></select>
           <input type="text" id="alcunha-input" placeholder="Alcunha" value ="">
+          <p id="warnings"></p>
           <button class="button" id="filtrar" onclick="filter()">Filtrar</button>
-          <div id="warnings"></div>
+          
         </div>
       </div>
 </head>
@@ -44,7 +45,7 @@
     <button id="refresh" onclick="loadTree(true)"><img src="refresh.svg"width="24" height="24"> </button>
     <div id="myDiagramDiv"></div>
     <div id="sidebar">
-        <button id="close-button" onclick="closeSideBar()"><img src="close.svg" alt="Add icon" width="44" height="44"></button>
+        <button id="close-button" onclick="closeSideBar()">&times;</button>
         <div id="sidebar-content">
             <h2 id="alcunha"></h2>
         </div>
