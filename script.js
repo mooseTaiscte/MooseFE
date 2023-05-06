@@ -14,7 +14,7 @@ const sideBarValues = new Map([
     ["localCaloiro", "Local de Subida a Palco"],
     ["dataCaloiro", "Data da Subida a Palco"],
     ["dataSaida", "Data da Saída da Tuna"],
-    ["localSaída", "Local da Saída da Tuna"],
+    ["localSaida", "Local da Saída da Tuna"],
     ["instrumento", "Instrumento"],
     ["curso", "Curso"],
     ["gender", "Género"],
