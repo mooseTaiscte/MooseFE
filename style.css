@@ -54,15 +54,24 @@ html, body{
 
 #top-bar {
   background-color: #fff;
+  position: absolute;
   display: flex;
-  align-items: center;
-  flex-direction: column;
+  align-items: center; /* align items vertically */
+  justify-content: flex-start; /* align items horizontally */
+  flex-wrap: wrap; /* allow elements to wrap to next line if needed */
   z-index: 3;
+  width: 100%;
+}
+
+
+#top-bar > * {
+  flex-basis: 10%; /* set the width of each element to be 20% of the parent container */
+  padding: 10px; /* add some padding between elements */
+  margin-bottom: 10px;
 }
 
 #logo{
   max-width: 100px;
-  padding: 10px;
 }
 
 /* Style the select element */
@@ -76,10 +85,9 @@ html, body{
   font-size: 16px; /* set the font size to your desired size */
   margin: 10px;
   padding: 6px 15px;
-  width: 80%;
   background-repeat: no-repeat;
   background-position: right center;
-  box-sizing: border-box;
+  max-width: 200px;
 }
 
 #top-bar > select{
@@ -88,12 +96,11 @@ html, body{
 }
 
 #warnings {
+  position: fixed;
   top: 0;
   right: 0;
   margin: 10px;
-  z-index: 3;
-  color: red;
-  font-size: 12px;
+  z-index: 9999;
 }
 
 
@@ -190,14 +197,9 @@ option {
 }
 
 #close-button {
-  margin-top: 20px;
-  margin-left: 10px;
-  z-index: 3;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-  background-color: transparent;
+  margin-top: 10px;
+  margin-right: 10px;
+  z-index: 100;
 }
 
 .node-selected {
@@ -246,54 +248,4 @@ content {
   font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-}
-
-#sidebar-toggle-icon {
-  display: block;
-  float: left;
-  padding-left: 1%;
-}
-
-#left-sidebar-toggle {
-  position: fixed;
-  width: 100%;
-  height: 10%;
-  background-color: #dae4e4;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  z-index: 3;
-}
-
-#left-sidebar-toggle svg {
-  fill: #444;
-}
-
-#left-sidebar {
-  position: fixed;
-  top: 0;
-  left: -300px; /* Set the initial position of the sidebar outside the viewport */
-  width: 300px;
-  height: 100%;
-  padding: 10px;
-  background-color: #fff;
-  overflow-x: hidden;
-  transition: 0.5s; /* Add a transition effect when showing/hiding the sidebar */
-  z-index: 3;
-}
-
-#left-sidebar.show {
-  left: 0; /* Set the position of the sidebar to 0 to show it */
-}
-
-#close-left-sidebar {
-  position: absolute;
-  top: 20px;
-  right: 10px;
-  padding: 10px;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-  background-color: transparent;
 }
