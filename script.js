@@ -491,7 +491,7 @@ function showNodeDetails(e, node) {
     } else {
         showAllNodeDetailOnSideBar(node)
     }
-    if (sensitiveContent){
+    if (sensitiveContent&&node.hasImage){
         showTunanteImage(node)
     }
     const save = document.getElementById('save')
