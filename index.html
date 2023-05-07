@@ -11,17 +11,24 @@
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <div id="top-bar">
+    <button id="left-sidebar-toggle">
+        <img src="menu.svg" id="sidebar-toggle-icon" width="44" height="44">
+    </button>
+    <div id="left-sidebar" class="show">
+        <button id="close-left-sidebar">&times;</button>
         <img id="logo" src="TAISCTE.jpg" onclick="showPrompt()">
-        <select id="instrumento-input"></select>
-        <select id="familia-input"></select>
-        <select id="naipe-input"></select>
-        <select id="hierarquia-input"></select>
-        <select id="curso-input"></select>
-        <input type="text" id="alcunha-input" placeholder="Alcunha" value ="">
-        <button class="button" id="filtrar" onclick="filter()">Filtrar</button>
-        <div id="warnings"></div>
-    </div>
+        <div id="top-bar">
+          <select id="instrumento-input"></select>
+          <select id="familia-input"></select>
+          <select id="naipe-input"></select>
+          <select id="hierarquia-input"></select>
+          <select id="curso-input"></select>
+          <input type="text" id="alcunha-input" placeholder="Alcunha" value ="">
+          <p id="warnings"></p>
+          <button class="button" id="filtrar" onclick="filter()">Filtrar</button>
+          
+        </div>
+      </div>
 </head>
 <body>
     <div class="overlay" style="display: none;"></div>
@@ -38,7 +45,7 @@
     <button id="refresh" onclick="loadTree(true)"><img src="refresh.svg"width="24" height="24"> </button>
     <div id="myDiagramDiv"></div>
     <div id="sidebar">
-        <button id="close-button" onclick="closeSideBar()"><img src="close.svg" alt="Add icon" width="44" height="44"></button>
+        <button id="close-button" onclick="closeSideBar()">&times;</button>
         <div id="sidebar-content">
             <h2 id="alcunha"></h2>
         </div>
