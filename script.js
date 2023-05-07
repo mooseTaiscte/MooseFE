@@ -491,7 +491,7 @@ function showNodeDetails(e, node) {
     } else {
         showAllNodeDetailOnSideBar(node)
     }
-    if (sensitiveContent&&node.hasImage){
+    if (sensitiveContent){
         showTunanteImage(node)
     }
     const save = document.getElementById('save')
@@ -520,7 +520,11 @@ function showTunanteImage(node) {
       existingImage.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
     } else {
       const image = new Image();
+      if(node.data.hasImage){
       image.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
+      }else{
+        image.src="TAISCTE.jpg";
+      }
       image.style.display = 'none';
       image.onload = function() {
         image.style.display = 'block';
