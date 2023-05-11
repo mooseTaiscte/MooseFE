@@ -234,7 +234,7 @@ function createDropdownValues(listToPopulate, propertyName) {
 
     // Loop through the nodes and add their property values to the Set
     myDiagram.nodes.each(function (node) {
-        if (node.data[propertyName] != null) {
+        if (node.data[propertyName] != null&&node.data[propertyName] != ""&&node.data[propertyName] !="null"&&node.data[propertyName] != "Null") {
             listToPopulate.add(node.data[propertyName]);
         }
     });
@@ -243,6 +243,7 @@ function createDropdownValues(listToPopulate, propertyName) {
 function populateTopBarValues(selectId, propertyName,valuesList) {
     // Get the select element
     const select = document.getElementById(selectId);
+    select.innerHTML="";
 
       // Add the default option to the select element
       const defaultOption = document.createElement('option');
