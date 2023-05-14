@@ -536,12 +536,19 @@ function clearSibeBarContent() {
 }
 
 function showTunanteImage(node) {
+   
     const existingImage = document.querySelector(`img[data-key="${node.data.key}"]`);
     if (existingImage) {
       existingImage.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
     } else {
       const image = new Image();
+      if(node.data.hasImage==true){
+        
       image.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
+      }else{
+        image.src = `TAISCTE.jpg`;
+
+      }
       image.style.display = 'none';
       image.onload = function() {
         image.style.display = 'block';
@@ -591,7 +598,10 @@ function uploadImage(image,node) {
         }
         console.log(`File uploaded successfully. File location: ${data.Location}`);
         showTunanteImage(node);
-        node.findObject("Picture").source=`https://moosepictures.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
+        node.data.hasImage="true";
+        console.log(node.data)
+        saveNodeToDB(node)
+        node.findObject("Picture").source=`https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
 
       });
     };
@@ -609,7 +619,7 @@ function showAllNodeDetailOnSideBar(node) {
     editable.hidden = true
     save.hidden = true
     Object.keys(node.data).forEach(key => {
-        if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0) {
+        if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0 && key!="gender") {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
             if (key == 'padrinhoName' && node.data.gender == "F") {
@@ -632,7 +642,7 @@ function showAllNodeDetailOnSideBarEditable(node) {
     save.hidden = false
     console.log(node.data)
     Object.keys(node.data).forEach(key => {
-        if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0) {
+        if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0 && key!="gender") {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
             p.textContent = `${tag}: `;
