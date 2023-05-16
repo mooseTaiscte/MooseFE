@@ -120,7 +120,7 @@ function init(json) {
                             },
                             new go.Binding("text", "", function (data) {
                                 if (sensitiveContent) {
-                                    return data.name;
+                                    return data.nome;
                                 }
 
                             }).makeTwoWay()),
@@ -633,6 +633,11 @@ function showAllNodeDetailOnSideBar(node) {
             }
             else if (key == 'padrinhoName' && node.data.gender == "M") {
                 p.textContent = `Madrinha: ${node.data[key]}`;
+            }
+            else if(key=="nome" ){
+                if(sensitiveContent){
+                p.textContent = `${tag}: ${node.data[key]}`;
+                }
             }
             else {
                 p.textContent = `${tag}: ${node.data[key]}`;
