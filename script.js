@@ -38,7 +38,7 @@ const closeSidebar = document.getElementById('close-left-sidebar');
 const sidebar = document.getElementById('left-sidebar');
 
 sidebarToggle.addEventListener('click', () => {
-    if (isMobile()){
+    if (isMobile()) {
         closeSideBar();
     }
     sidebar.classList.toggle('show');
@@ -56,7 +56,7 @@ function init(json) {
                 padding: 250,
                 "undoManager.isEnabled": true,
                 layout: new go.TreeLayout({ angle: 90, layerSpacing: 35, arrangement: go.TreeLayout.ArrangementHorizontal })
-                
+
             });
 
     myDiagram.model = new go.TreeModel(json)
@@ -118,7 +118,12 @@ function init(json) {
                                 minSize: new go.Size(10, 14),
                                 margin: new go.Margin(2, 0, 0, 3)
                             },
-                            new go.Binding("text", "nome").makeTwoWay()),
+                            new go.Binding("text", "", function (data) {
+                                if (sensitiveContent) {
+                                    return data.name;
+                                }
+
+                            }).makeTwoWay()),
                         //INSTRUMENTO
                         $(go.TextBlock, "Title: ", "Instrumento:",
                             { row: 2, column: 0 }),
@@ -187,11 +192,11 @@ function init(json) {
             ),
             {
                 name: "BODY",
-                mouseEnter: function(e, node) {
+                mouseEnter: function (e, node) {
                     node.findObject("BUTTON").opacity = 1;
                     node.findObject("BUTTON2").opacity = 1;
                 },
-                mouseLeave: function(e, node) {
+                mouseLeave: function (e, node) {
                     node.findObject("BUTTON").opacity = 0;
                     node.findObject("BUTTON2").opacity = 0;
                 }
@@ -237,7 +242,7 @@ var requestOptions = {
 };
 
 function createTopBarValues() {
-    
+
     selectElement = document.getElementById("alcunha-input").value = '';;
 
     populateTopBarValues('instrumento-input', 'instrumento', instrumentoList);
@@ -257,24 +262,24 @@ function createDropdownValues(listToPopulate, propertyName) {
     });
 }
 
-function populateTopBarValues(selectId, propertyName,valuesList) {
+function populateTopBarValues(selectId, propertyName, valuesList) {
     // Get the select element
     const select = document.getElementById(selectId);
-    select.innerHTML="";
+    select.innerHTML = "";
 
-      // Add the default option to the select element
-      const defaultOption = document.createElement('option');
-      defaultOption.text = propertyName[0].toUpperCase() + propertyName.slice(1); // capitalize the first letter of the property name
-      defaultOption.selected = true;
-      select.add(defaultOption);
+    // Add the default option to the select element
+    const defaultOption = document.createElement('option');
+    defaultOption.text = propertyName[0].toUpperCase() + propertyName.slice(1); // capitalize the first letter of the property name
+    defaultOption.selected = true;
+    select.add(defaultOption);
 
     // Create the dropdown options based on the values in the Set
     valuesList.forEach(value => {
-            const option = document.createElement('option');
-            option.value = value;
-            option.text = value;
-            select.add(option);
-        
+        const option = document.createElement('option');
+        option.value = value;
+        option.text = value;
+        select.add(option);
+
     });
 }
 
@@ -439,7 +444,7 @@ function removeTunante(node) {
         method: 'POST',
         headers: myHeaders,
     };
-    
+
     fetch("https://moose.eu-central-1.elasticbeanstalk.com/delete?id=" + node.key, requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
@@ -489,8 +494,8 @@ function saveNodeToDB(node) {
     myDiagram.updateAllTargetBindings()
 }
 
-function removeKeyIfNegative(node){
-    if (node.key < 0){
+function removeKeyIfNegative(node) {
+    if (node.key < 0) {
         var newData = {};
         for (var prop in node) {
             if (prop !== "key") {
@@ -508,12 +513,12 @@ function showNodeDetails(e, node) {
     showSideBarPanel()
     addAlcunhaToSideBar(node.data.alcunha)
     addFieldsToSideBarDropdown(node)
-    if (editable){
+    if (editable) {
         showAllNodeDetailOnSideBarEditable(node)
     } else {
         showAllNodeDetailOnSideBar(node)
     }
-    if (sensitiveContent){
+    if (sensitiveContent) {
         showTunanteImage(node)
     }
     const save = document.getElementById('save')
@@ -537,78 +542,78 @@ function clearSibeBarContent() {
 }
 
 function showTunanteImage(node) {
-   
+
     const existingImage = document.querySelector(`img[data-key="${node.data.key}"]`);
     if (existingImage) {
-      existingImage.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
+        existingImage.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
     } else {
-      const image = new Image();
-      if(node.data.hasImage==true){
-        
-      image.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
-      }else{
-        image.src = `TAISCTE.jpg`;
+        const image = new Image();
+        if (node.data.hasImage == true) {
 
-      }
-      image.style.display = 'none';
-      image.onload = function() {
+            image.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
+        } else {
+            image.src = `TAISCTE.jpg`;
+
+        }
+        image.style.display = 'none';
+        image.onload = function () {
+            image.style.display = 'block';
+            image.style.margin = '0 auto';
+        };
         image.style.display = 'block';
         image.style.margin = '0 auto';
-      };
-      image.style.display = 'block';
-      image.style.margin = '0 auto';
-      image.style.width = '200px';
-      image.setAttribute('data-key', node.data.key);
-      if (editable){
-        image.addEventListener('click', function() {
-            uploadImage(image,node);
-          });
-      }
-      content.prepend(image);
+        image.style.width = '200px';
+        image.setAttribute('data-key', node.data.key);
+        if (editable) {
+            image.addEventListener('click', function () {
+                uploadImage(image, node);
+            });
+        }
+        content.prepend(image);
     }
-  }
-  
+}
 
-function uploadImage(image,node) {
+
+function uploadImage(image, node) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
     input.onchange = function (event) {
-      const file = event.target.files[0];
-      AWS.config.update({
-        region: 'eu-central-1',
-        credentials: new AWS.Credentials({
-          accessKeyId: accessKey,
-          secretAccessKey: secretKey
-        })
-      });
-      const s3 = new AWS.S3();
+        const file = event.target.files[0];
+        AWS.config.update({
+            region: 'eu-central-1',
+            credentials: new AWS.Credentials({
+                accessKeyId: accessKey,
+                secretAccessKey: secretKey
+            })
+        });
+        const s3 = new AWS.S3();
 
-      const params = {
-        Bucket: 'moosepicturesbucket',
-        Key: node.data.key+".jpg",
-        ContentType: ".jpg",
-        Body: file,
-        ACL: 'public-read',
-      };
+        const params = {
+            Bucket: 'moosepicturesbucket',
+            Key: node.data.key + ".jpg",
+            ContentType: ".jpg",
+            Body: file,
+            ACL: 'public-read',
+        };
 
-      s3.upload(params, function (err, data) {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        console.log(`File uploaded successfully. File location: ${data.Location}`);
-        showTunanteImage(node);
-        node.data.hasImage=true;
-        console.log(node.data)
-        saveNodeToDB(node)
-        node.findObject("Picture").source=`https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
+        s3.upload(params, function (err, data) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`File uploaded successfully. File location: ${data.Location}`);
+            showTunanteImage(node);
+            node.data.hasImage = true;
+            console.log(node.data)
+            saveNodeToDB(node)
+            node.findObject("Picture").source = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
 
-      });
+        });
     };
     image.removeEventListener('click', uploadImage);
     input.click();
-  }
+}
 
 function addAlcunhaToSideBar(alcunha) {
     const h2 = document.createElement('h2');
@@ -620,7 +625,7 @@ function showAllNodeDetailOnSideBar(node) {
     editable.hidden = true
     save.hidden = true
     Object.keys(node.data).forEach(key => {
-        if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0 && key!="gender") {
+        if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0 && key != "gender") {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
             if (key == 'padrinhoName' && node.data.gender == "F") {
@@ -643,7 +648,7 @@ function showAllNodeDetailOnSideBarEditable(node) {
     save.hidden = false
     console.log(node.data)
     Object.keys(node.data).forEach(key => {
-        if (sideBarValues.has(key)&& node.data[key] && node.data[key].length !== 0 && key!="gender") {
+        if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0 && key != "gender") {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
             p.textContent = `${tag}: `;
@@ -745,12 +750,12 @@ async function loginHandler() {
     let password = document.getElementById("passwordInput").value;
 
     console.log(await validateCredentialsForBucket(username, password))
-    if (username == "moose" && await validateCredentialsForBucket(username, password)){
+    if (username == "moose" && await validateCredentialsForBucket(username, password)) {
         enableSensitiveMode()
         enableEditMode()
         loadTree(true)
         closeSideBar()
-    } else if (username == "taiscte" && await validateCredentialsForBucket(username, password)){
+    } else if (username == "taiscte" && await validateCredentialsForBucket(username, password)) {
         enableSensitiveMode()
         loadTree(true)
         closeSideBar()
@@ -765,14 +770,14 @@ function showPrompt() {
     var prompt = document.querySelector('.prompt');
     overlay.style.display = 'block';
     prompt.style.display = 'block';
-  }
-  
-  function hidePrompt() {
+}
+
+function hidePrompt() {
     var overlay = document.querySelector('.overlay');
     var prompt = document.querySelector('.prompt');
     overlay.style.display = 'none';
     prompt.style.display = 'none';
-  }
+}
 
 function validateCredentialsForBucket(username, password) {
     const getS3Credentials = `https://moose.eu-central-1.elasticbeanstalk.com/getS3Credentials?password=${password}&userName=${username}`;
@@ -798,20 +803,20 @@ function validateCredentialsForBucket(username, password) {
         });
 }
 
-function enableEditMode(){
+function enableEditMode() {
     editable = true
 }
 
-function enableSensitiveMode(){
+function enableSensitiveMode() {
     sensitiveContent = true
 }
 
-function isMobile(){
+function isMobile() {
     let check = false;
-    (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+    (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
 }
 
-function closeLeftSideBar(){
+function closeLeftSideBar() {
     sidebar.classList.remove('show');
 }
