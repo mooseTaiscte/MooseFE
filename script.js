@@ -604,12 +604,11 @@ function uploadImage(image, node) {
             }
             console.log(`File uploaded successfully. File location: ${data.Location}`);
             showTunanteImage(node);
-            node.data.hasImage = true;
-            console.log(node.data)
-            saveNodeToDB(node)
             node.findObject("Picture").source = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
-
         });
+        node.data.hasImage = true;
+        console.log(node.data)
+        saveNodeToDB(node)
     };
     image.removeEventListener('click', uploadImage);
     input.click();
