@@ -607,7 +607,6 @@ function uploadImage(image, node) {
             node.findObject("Picture").source = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
         });
         node.data.hasImage = true;
-        console.log(node.data)
         saveNodeToDB(node)
     };
     image.removeEventListener('click', uploadImage);
@@ -627,7 +626,15 @@ function showAllNodeDetailOnSideBar(node) {
         if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0 && key != "gender") {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
-            if (key == 'padrinhoName' && node.data.gender == "F") {
+            if (key == 'hierarquia' && node.data.gender == "F") {
+                if (node.data[key] == "Caloiro") {
+                    p.textContent = "Hierarquia: Caloira"
+                }
+                else if (node.data[key] == "Veterano") {
+                    p.textContent = "Hierarquia: Veterana"
+                }
+            }
+            else if (key == 'padrinhoName' && node.data.gender == "F") {
                 p.textContent = `Padrinho: ${node.data[key]}`;
             }
             else if (key == 'padrinhoName' && node.data.gender == "M") {
@@ -650,37 +657,33 @@ function showAllNodeDetailOnSideBarEditable(node) {
     editable = document.getElementById("editable-inputs")
     editable.hidden = false
     save.hidden = false
-    console.log(node.data)
     Object.keys(node.data).forEach(key => {
         if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0 && key != "gender") {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
             p.textContent = `${tag}: `;
             const keyText = key.charAt(0).toUpperCase() + key.slice(1);
-            const valueText = node.data[key];
+            var valueText = node.data[key];
             const input = document.createElement('input');
-            input.type = 'text';
+            input.type = defineTypeOfInput(key);
             input.placeholder = 'Value';
+
+            if (key == 'hierarquia' && node.data.gender == "F") {
+                if (node.data[key] == "Caloiro") {
+                    valueText = "Caloira"
+                }
+                else if (node.data[key] == "Veterano") {
+                    valueText = "Veterana"
+                }
+                else {
+                    valueText = node.data[key]
+                }
+            }
             if (key == 'padrinhoName' && node.data.gender == "F") {
                 p.textContent = `Padrinho: ${node.data[key]}`;
             }
             else if (key == 'padrinhoName' && node.data.gender == "M") {
                 p.textContent = `Madrinha: ${node.data[key]}`;
-            }
-            else if (key == 'hierarquia' && node.data.gender == "F") {
-                if (node.data[key] == "Caloiro") {
-                    input.value = "Caloira"
-                }
-                if (node.data[key] == "Veterano") {
-                    input.value = "Veterana"
-                }
-                else {
-                    input.value = node.data[key]
-                }
-                input.addEventListener('input', () => {
-                    node.data[key] = input.value;
-                });
-                p.appendChild(input);
             }
             else {
                 input.value = valueText;
@@ -689,9 +692,18 @@ function showAllNodeDetailOnSideBarEditable(node) {
                 });
                 p.appendChild(input);
             }
+            
             content.appendChild(p);
         }
     });
+}
+
+function defineTypeOfInput(key){
+    if (key.includes('data')) {
+        return 'date';
+    } else {
+        return 'text';
+    }
 }
 
 function addFieldsToSideBarDropdown(node) {
