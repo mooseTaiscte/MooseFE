@@ -415,17 +415,14 @@ function addTunante(node) {
     myDiagram.startTransaction("add employee");
     const newemp = {
         parent: thisemp.key,
-        nome: "Placeholder",
-        alcunha: "Placeholder",
-        instrumento: "Placeholder",
-        hierarquia: "Placeholder",
-        naipe: "Placeholder",
-        curso: "Placeholder",
-        localCaloiro: "Placeholder",
-        localSaida: "Placeholder",
+        nome: " ",
+        alcunha: " ",
+        instrumento: " ",
+        hierarquia: " ",
+        naipe: " ",
+        curso: " ",
+        localCaloiro: " ",
         dataCaloiro: "1970-01-01",
-        dataNascimento: "1970-01-01",
-        dataIngressao: "1970-01-01",
     };
     myDiagram.model.addNodeData(newemp);
     const newnode = myDiagram.findNodeForData(newemp);
