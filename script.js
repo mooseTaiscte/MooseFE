@@ -552,7 +552,7 @@ function showTunanteImage(node) {
 
             image.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
         } else {
-            image.src = `TAISCTE.jpg`;
+            image.src = `placeHolderImage.jpg`;
 
         }
         image.style.display = 'none';
