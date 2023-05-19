@@ -273,8 +273,11 @@ function populateTopBarValues(selectId, propertyName, valuesList) {
     defaultOption.selected = true;
     select.add(defaultOption);
 
+    const valuesArray = Array.from(valuesList);
+    valuesArray.sort();
+
     // Create the dropdown options based on the values in the Set
-    valuesList.forEach(value => {
+    valuesArray.forEach(value => {
         const option = document.createElement('option');
         option.value = value;
         option.text = value;
