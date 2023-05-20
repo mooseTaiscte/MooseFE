@@ -425,6 +425,7 @@ function addTunante(node) {
     const newemp = {
         parent: thisemp.key,
         nome: " ",
+        gender: " ",
         alcunha: " ",
         instrumento: " ",
         hierarquia: " ",
@@ -686,7 +687,7 @@ function showAllNodeDetailOnSideBarEditable(node) {
     save.hidden = false;
 
     Object.keys(node.data).forEach(key => {
-        if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0 && key !== "gender") {
+        if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
             p.textContent = `${tag}: `;
