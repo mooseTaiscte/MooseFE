@@ -32,6 +32,13 @@ const naipeList = new Set();
 const hierarquiaList = new Set();
 const familiaList = new Set();
 const cursoList = new Set();
+const dataListsMapping = {
+    'instrumento': instrumentoList,
+    'naipe': naipeList,
+    'hierarquia': hierarquiaList,
+    'curso': cursoList
+};
+
 
 const sidebarToggle = document.getElementById('left-sidebar-toggle');
 const closeSidebar = document.getElementById('close-left-sidebar');
@@ -80,7 +87,6 @@ function init(json) {
                             name: "Picture",
                             desiredSize: new go.Size(70, 70),
                             margin: 1.5,
-                            source: "source.jpg",  // the default image
                             imageStretch: go.GraphObject.UniformToFill
                             //go.GraphObject.Uniform also usable
                         },
@@ -273,8 +279,11 @@ function populateTopBarValues(selectId, propertyName, valuesList) {
     defaultOption.selected = true;
     select.add(defaultOption);
 
+    const valuesArray = Array.from(valuesList);
+    valuesArray.sort();
+
     // Create the dropdown options based on the values in the Set
-    valuesList.forEach(value => {
+    valuesArray.forEach(value => {
         const option = document.createElement('option');
         option.value = value;
         option.text = value;
@@ -415,17 +424,15 @@ function addTunante(node) {
     myDiagram.startTransaction("add employee");
     const newemp = {
         parent: thisemp.key,
-        nome: "Placeholder",
-        alcunha: "Placeholder",
-        instrumento: "Placeholder",
-        hierarquia: "Placeholder",
-        naipe: "Placeholder",
-        curso: "Placeholder",
-        localCaloiro: "Placeholder",
-        localSaida: "Placeholder",
+        nome: " ",
+        gender: " ",
+        alcunha: " ",
+        instrumento: " ",
+        hierarquia: " ",
+        naipe: " ",
+        curso: " ",
+        localCaloiro: " ",
         dataCaloiro: "1970-01-01",
-        dataNascimento: "1970-01-01",
-        dataIngressao: "1970-01-01",
     };
     myDiagram.model.addNodeData(newemp);
     const newnode = myDiagram.findNodeForData(newemp);
@@ -552,7 +559,7 @@ function showTunanteImage(node) {
 
             image.src = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg`;
         } else {
-            image.src = `TAISCTE.jpg`;
+            image.src = `placeHolderImage.jpg`;
 
         }
         image.style.display = 'none';
@@ -653,49 +660,71 @@ function showAllNodeDetailOnSideBar(node) {
     });
 }
 
+function createInputWithDatalist(key, valueText) {
+    const input = document.createElement('input');
+    input.type = defineTypeOfInput(key);
+    input.placeholder = 'Value';
+    input.value = valueText;
+    input.setAttribute('list', key + '_list');
+    return input;
+}
+
+function updateGenderSpecificText(key, node) {
+    let valueText = node.data[key];
+    if (key === 'hierarquia' && node.data.gender === "F") {
+        if (node.data[key] === "Caloiro") {
+            valueText = "Caloira";
+        } else if (node.data[key] === "Veterano") {
+            valueText = "Veterana";
+        }
+    }
+    return valueText;
+}
+
 function showAllNodeDetailOnSideBarEditable(node) {
     editable = document.getElementById("editable-inputs")
-    editable.hidden = false
-    save.hidden = false
+    editable.hidden = false;
+    save.hidden = false;
+
     Object.keys(node.data).forEach(key => {
-        if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0 && key != "gender") {
+        if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0) {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
             p.textContent = `${tag}: `;
-            const keyText = key.charAt(0).toUpperCase() + key.slice(1);
-            var valueText = node.data[key];
-            const input = document.createElement('input');
-            input.type = defineTypeOfInput(key);
-            input.placeholder = 'Value';
 
-            if (key == 'hierarquia' && node.data.gender == "F") {
-                if (node.data[key] == "Caloiro") {
-                    valueText = "Caloira"
-                }
-                else if (node.data[key] == "Veterano") {
-                    valueText = "Veterana"
-                }
-                else {
-                    valueText = node.data[key]
-                }
-            }
-            if (key == 'padrinhoName' && node.data.gender == "F") {
-                p.textContent = `Padrinho: ${node.data[key]}`;
-            }
-            else if (key == 'padrinhoName' && node.data.gender == "M") {
-                p.textContent = `Madrinha: ${node.data[key]}`;
-            }
-            else {
-                input.value = valueText;
-                input.addEventListener('input', () => {
-                    node.data[key] = input.value;
-                });
+            const valueText = updateGenderSpecificText(key, node);
+            const input = createInputWithDatalist(key, valueText);
+
+            input.addEventListener('input', () => {
+                node.data[key] = input.value;
+            });
+
+            if (key === 'padrinhoName') {
+                p.textContent = (node.data.gender === "F") ? `Padrinho: ${node.data[key]}` : `Madrinha: ${node.data[key]}`;
+            } else {
                 p.appendChild(input);
+            }
+
+            if (['instrumento', 'naipe', 'hierarquia', 'curso'].includes(key)) {
+                p.appendChild(createDatalist(key + '_list', dataListsMapping[key]));
             }
             
             content.appendChild(p);
         }
     });
+}
+
+function createDatalist(id, optionsArray) {
+    const datalist = document.createElement('datalist');
+    datalist.id = id;
+
+    optionsArray.forEach(optionValue => {
+        const option = document.createElement('option');
+        option.value = optionValue;
+        datalist.appendChild(option);
+    });
+
+    return datalist;
 }
 
 function defineTypeOfInput(key){
