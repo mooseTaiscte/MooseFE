@@ -28,8 +28,8 @@ const sideBarValues = new Map([
 
 ]);
 const instrumentoList = new Set();
-const naipeList = new Set();
-const hierarquiaList = new Set();
+const naipeList = new Set(['Baixos','Altos','Médios 1','Médios 2']);
+const hierarquiaList = new Set(['Caloiro', 'Tuno', 'Veterano', 'Antigo Elemento', 'Cota']);
 const familiaList = new Set();
 const cursoList = new Set();
 const dataListsMapping = {
@@ -220,8 +220,6 @@ function init(json) {
     //Populate list
     createDropdownValues(instrumentoList, 'instrumento');
     createDropdownValues(familiaList, 'familia');
-    createDropdownValues(hierarquiaList, 'hierarquia');
-    createDropdownValues(naipeList, 'naipe');
     createDropdownValues(cursoList, 'curso');
     //Create Top bar Values
     createTopBarValues();
@@ -715,6 +713,7 @@ function showAllNodeDetailOnSideBarEditable(node) {
 }
 
 function createDatalist(id, optionsArray) {
+    console.log(optionsArray);
     const datalist = document.createElement('datalist');
     datalist.id = id;
 
