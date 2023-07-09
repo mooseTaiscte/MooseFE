@@ -27,6 +27,18 @@ const sideBarValues = new Map([
     ["alcunha", "Alcunha"],
 
 ]);
+const sideBarObligatoryFields = [
+    "padrinhoName",
+    "nome",
+    "familia",
+    "gender",
+    "alcunha",
+    "instrumento",
+    "hierarquia",
+    "naipe",
+    "curso",
+    "localCaloiro",
+    "dataCaloiro"]
 const instrumentoList = new Set();
 const naipeList = new Set();
 const hierarquiaList = new Set();
@@ -424,15 +436,15 @@ function addTunante(node) {
     myDiagram.startTransaction("add employee");
     const newemp = {
         parent: thisemp.key,
-        nome: " ",
-        gender: " ",
-        alcunha: " ",
-        instrumento: " ",
-        hierarquia: " ",
-        naipe: " ",
-        curso: " ",
-        localCaloiro: " ",
-        dataCaloiro: "1970-01-01",
+        nome: "",
+        gender: "",
+        alcunha: "",
+        instrumento: "",
+        hierarquia: "",
+        naipe: "",
+        curso: "",
+        localCaloiro: "",
+        dataCaloiro: "",
     };
     myDiagram.model.addNodeData(newemp);
     const newnode = myDiagram.findNodeForData(newemp);
@@ -529,7 +541,10 @@ function showNodeDetails(e, node) {
         showTunanteImage(node)
     }
     const save = document.getElementById('save')
-    save.onclick = function () { saveNodeToDB(node) }
+    save.onclick = function () { 
+        saveNodeToDB(node) 
+        closeSideBar()
+    }
     const add = document.getElementById("add-button")
     add.onclick = function () { addSelectedFieldToSideBar(node) }
 }
@@ -614,7 +629,7 @@ function uploadImage(image, node) {
             node.findObject("Picture").source = `https://moosepicturesbucket.s3.eu-central-1.amazonaws.com/${node.data.key}.jpg?${Date.now()}`;
         });
         node.data.hasImage = true;
-        saveNodeToDB(node)
+        //saveNodeToDB(node)
     };
     image.removeEventListener('click', uploadImage);
     input.click();
@@ -687,7 +702,7 @@ function showAllNodeDetailOnSideBarEditable(node) {
     save.hidden = false;
 
     Object.keys(node.data).forEach(key => {
-        if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0) {
+        if (sideBarValues.has(key) && node.data[key] && node.data[key].length !== 0 || sideBarObligatoryFields.includes(key)) {
             const p = document.createElement('p');
             const tag = sideBarValues.get(key);
             p.textContent = `${tag}: `;
@@ -741,7 +756,7 @@ function addFieldsToSideBarDropdown(node) {
 
     const existingValues = new Set(Object.keys(node.data).filter(key => node.data[key] !== null && node.data[key] !== ""));
     for (const [value, text] of sideBarValues) {
-        if (!existingValues.has(value) && ((node.data[value] === "" || node.data[value] === null))) {
+        if (!existingValues.has(value) && !sideBarObligatoryFields.includes(value)) {
             const option = document.createElement("option");
             option.value = value;
             option.text = text;
